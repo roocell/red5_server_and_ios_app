@@ -1,9 +1,16 @@
 FROM ubuntu:latest
 #FROM openjdk:8
 
-# to run
-# docker run  -p 5080:5080 -p 1935:1935 -p 8554:8554 -e REST_API_ACCESS_TOKEN=zaq12wsx -it -v ~/teleport/red5/red5-start.sh:/red5-start.sh --name myred5 red5server
+# to build
+# docker build -t red5server -f red5-docker.txt .
 
+# to run
+# docker run -d -p 5080:5080 -p 1935:1935 -p 8554:8554 -e REST_API_ACCESS_TOKEN=zaq12wsx -it --name myred5 red5server
+
+# to override entrypoint and debug run
+# docker run  -p 5080:5080 -p 1935:1935 -p 8554:8554 -e REST_API_ACCESS_TOKEN=zaq12wsx -it --entrypoint=/bin/bash --name myred5 red5server
+
+# the php scripts need to know this token in order to access the REST API
 
 RUN apt-get update
 RUN apt-get install -y default-jdk

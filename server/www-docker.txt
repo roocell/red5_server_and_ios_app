@@ -1,11 +1,14 @@
 FROM php:5.6-apache
 
 # this is a container for a LAMP server
+
+# to build
+
+
 # to run
-# docker run --volumes-from www -d -p 11111:80 -p 11112:443 \
-#    -e RED5IP=$(docker inspect --format='{{.NetworkSettings.IPAddress}}' myred5) \
-#    -v ~/teleport/config/php.ini:/usr/local/etc/php/php.ini \
-#    -it --link mysql:mysql --name myphp roocell/phpapache
+
+# docker create -v ~/teleport/server/www:/var/www/html/ --name www roocell/phpapache /bin/true
+# docker run --volumes-from www -d -p 11111:80 -p 11112:443 -e RED5IP=$(docker inspect --format='{{.NetworkSettings.IPAddress}}' myred5) -v ~/teleport/server/config/php.ini:/usr/local/etc/php/php.ini -it --link mysql:mysql --name myphp roocell/phpapache
 
 # TODO: probably should add in phpmyadmin into this dockerfile
 #       passing in docker variables to modify the config.inc.php, etc

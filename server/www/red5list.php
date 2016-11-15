@@ -1,4 +1,11 @@
 <?php
+// this script connects to the red5 server in the other docker container
+// gets the list of streams, and reports the JSON back to the caller (typically the iphone app)
+
+// $RED5IP is passed into the phpapache container as a variable
+// it's the IP of the red5 server on the internal docker subnet
+// (the subset which docker containers talk to each other)
+
 ini_set('display_errors', 1);
 ini_set('exit_on_timeout', 1);
 error_reporting(E_ALL | E_STRICT);
@@ -32,6 +39,9 @@ curl_close($ch);
 // Will dump a beauty json :3
 //var_dump(json_decode($result, true));
 
+// just return the results from red5 directoy to the caller
+// in the future we can massage this json to include whatever we want
+// like extra data from our dataset like location, user, etc
 echo $result;
 
 ?>

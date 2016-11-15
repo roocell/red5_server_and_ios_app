@@ -1,9 +1,18 @@
 FROM mysql:latest
 MAINTAINER Michael Russell
 
-ENV MYSQL_ROOT_PASSWORD admin123 
-ENV MYSQL_PASSWORD admin123 
-ENV MYSQL_DATABASE mysql       
+# build a mysql container
+# docker build -f mysql-docker.txt  -t osx_localdb_mysql .
+
+# run it like this so the mysql database gets saved on the host
+# you have to set the password at least for the first time.
+#docker run  -p 3900:3306 --name mysql -e MYSQL_ROOT_PASSWORD=admin123 -v ~/teleport/mysql/datadir:/var/lib/mysql -d osx_localdb_mysql
+
+# this will create a db in the mysql folder
+
+ENV MYSQL_ROOT_PASSWORD admin123
+ENV MYSQL_PASSWORD admin123
+ENV MYSQL_DATABASE mysql
 
 # this need to stay the same for script to work
 ENV MYSQL_USER mysql
@@ -11,6 +20,6 @@ ENV MYSQL_USER mysql
 COPY ./mysql/localdb-run.sh /
 RUN chmod 755 /localdb-run.sh
 
-ENTRYPOINT ["/localdb-run.sh"] 
+ENTRYPOINT ["/localdb-run.sh"]
 
 EXPOSE 3306
