@@ -41,5 +41,14 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>Red5 Pro uses your camera for live streaming</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Red5 Pro uses your microphone for live streaming</string>
 </dict>
 </plist>

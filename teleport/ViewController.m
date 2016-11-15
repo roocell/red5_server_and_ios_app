@@ -7,6 +7,7 @@
 //
 
 #import "ViewController.h"
+#import "PublishExample.h"
 
 @interface ViewController ()
 
@@ -25,5 +26,29 @@
     // Dispose of any resources that can be recreated.
 }
 
+-(void) showExample : (UIViewController*)viewController{
+    
+    
+    NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"connection" ofType:@"plist"]];
+    
+    if([[dict objectForKey:@"domain"] isEqualToString:@"0.0.0.0"]){
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"No Server!" message:@"Set the domain in your connection.plist!" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [alert show];
+        return;
+        
+    }
+    
+    UIView *view = [[UIView alloc] initWithFrame:self.view.frame];
+    viewController.view = view;
+    
+    [self.navigationController pushViewController:viewController animated:YES];
+    //[self presentViewController:viewController animated:YES completion:nil];
+    
+}
+
+- (IBAction)onPublish:(id)sender {
+    
+    [self showExample:[PublishExample new]];
+}
 
 @end
