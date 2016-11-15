@@ -41,6 +41,7 @@
 /* Begin PBXFileReference section */
 		15CE398A8481C00423B931CA /* Pods-teleport.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-teleport.release.xcconfig"; path = "Pods/Target Support Files/Pods-teleport/Pods-teleport.release.xcconfig"; sourceTree = "<group>"; };
 		3BC17966F91B35EB82DE0842 /* Pods_teleport.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_teleport.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		7D0D84731DDB9CB700830F0D /* teleport.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = teleport.entitlements; sourceTree = "<group>"; };
 		7D6849191DD5594B00267B8D /* teleport.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = teleport.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7D68491D1DD5594B00267B8D /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		7D68491F1DD5594B00267B8D /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -153,6 +154,7 @@
 		7D68491B1DD5594B00267B8D /* teleport */ = {
 			isa = PBXGroup;
 			children = (
+				7D0D84731DDB9CB700830F0D /* teleport.entitlements */,
 				7D6849651DDA859700267B8D /* util.h */,
 				7D6849381DD55ED600267B8D /* connection.plist */,
 				7D6849401DD55FD100267B8D /* BaseExample.h */,
@@ -244,6 +246,11 @@
 						DevelopmentTeam = SUKAFQ5426;
 						LastSwiftMigration = 0810;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.Push = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -467,6 +474,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = teleport/teleport.entitlements;
 				DEVELOPMENT_TEAM = SUKAFQ5426;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -489,6 +497,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = teleport/teleport.entitlements;
 				DEVELOPMENT_TEAM = SUKAFQ5426;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
