@@ -34,4 +34,4 @@ openssl s_client -connect gateway.push.apple.com:2195 -cert teleport.pem -key te
 
 # can also use PHP
 docker exec -i -t myphp bash
-php simplepush.php
+php apns/push.php

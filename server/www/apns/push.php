@@ -1,22 +1,27 @@
 <?php
 header("Content-Type: text/json");
 error_reporting(E_ALL); ini_set('display_errors', '1');
-if(!isset($_REQUEST['username']) || $_REQUEST['username']=="")
+
+// to insert row in db
+// insert into users (uuid,apns_token, lat, lon) values ("1C778026-12D2-447B-A948-13584B9C5AE0","43bc99d817ad6cf308a0e457adedfbfab9bae81f5638fca6264205845f304ddf", 0, 0)
+
+// to call via browser
+// http://roocell.homeip.net:11111/apns/push.php?uuid=1C778026-12D2-447B-A948-13584B9C5AE0
+
+$use_apns_sandbox=0;
+
+if(!isset($_REQUEST['uuid']) || $_REQUEST['uuid']=="")
 {
 	$msg = array ('status' => 'invalid_input');
 	echo json_encode($msg);
 	exit();
 }
-if(!isset($_REQUEST['apip']) || $_REQUEST['apip']=="")
-{
-	$msg = array ('status' => 'invalid_input');
-	echo json_encode($msg);
-	exit();
-}
-$username=$_REQUEST['username'];
-$apip=$_REQUEST['apip'];
+
+
+$uuid=$_REQUEST['uuid'];
+
 // get token based on $apip
-$dsn = "mysql:host=".gethostbyname('mysql').";port=3306;dbname=wifi_sentinel;charset=utf8";
+$dsn = "mysql:host=".gethostbyname('mysql').";port=3306;dbname=teleport;charset=utf8";
 $usr = 'root';
 $pwd = 'admin123';
 try {
@@ -24,41 +29,46 @@ try {
 } catch (PDOException $e) {
     die('Connection failed: ' . $e->getMessage());
 }
-$deviceToken=0;
-$sql="SELECT * FROM sentinels WHERE apip='$apip'";
+$apns_token=0;
+$sql="SELECT * FROM users WHERE uuid='$uuid'";
 	foreach ($db->query($sql) as $row) {
 			// TODO: support multiple sentinels per ap
-			$deviceToken = $row['device_token'];
-      $appdebug = $row['debug'];
+			$apns_token = $row['apns_token'];
 	}
-if ($deviceToken)
+if ($apns_token)
 {
   $token_status="found";
 } else {
 	// Put your device token here (without spaces):
-	$deviceToken = '7660ed22f31a1eab54d46edbb7c6c932d190877365a0acced40487037d0a68ec';
+	$apns_token = 'blahblahblah';
 	//$deviceToken = 'd4d27240ffeb2a3d5586adad80089e350dcb6ac4b90f6195963d88d2d4d4e117';
 	$token_status="default";
 }
 $db=NULL;
+
+
+// data is the data we want to pass inside the push notif
+// here we can send information of the user who's trying to contact the pushed user
+$data = array ('uuid' => $uuid);
+
+
 // Put your alert message here:
-$data = array ('username' => $username, 'apip' => $apip);
-$message = $username." would like to join your wifi";
+$message = "hi we would like to push you";
 ////////////////////////////////////////////////////////////////////////////////
 // Open a connection to the APNS server
-if ($appdebug)
+if ($use_apns_sandbox)
 {
 	$passphrase = 'admin123'; // Put your private key's passphrase here:
 	$ctx = stream_context_create();
-	stream_context_set_option($ctx, 'ssl', 'local_cert', 'ck.pem');
+	stream_context_set_option($ctx, 'ssl', 'local_cert', 'teleport.pem');
 	stream_context_set_option($ctx, 'ssl', 'passphrase', $passphrase);
   $fp = stream_socket_client(
         'ssl://gateway.sandbox.push.apple.com:2195', $err,
         $errstr, 60, STREAM_CLIENT_CONNECT|STREAM_CLIENT_PERSISTENT, $ctx);
 } else {
-	$passphrase = 'admin123'; // Put your private key's passphrase here:
+	$passphrase = 'admin123'; // Put your private key's passphrase here (used when exporting the p12 file)
 	$ctx = stream_context_create();
-	stream_context_set_option($ctx, 'ssl', 'local_cert', 'ck_PS.pem');
+	stream_context_set_option($ctx, 'ssl', 'local_cert', 'teleport.pem');
 	stream_context_set_option($ctx, 'ssl', 'passphrase', $passphrase);
   $fp = stream_socket_client(
 				'ssl://gateway.push.apple.com:2195', $err,
@@ -77,8 +87,9 @@ $body['aps'] = array(
 $body['data'] = $data;
 // Encode the payload as JSON
 $payload = json_encode($body);
+//echo $payload;
 // Build the binary notification
-$msg = chr(0) . pack('n', 32) . pack('H*', $deviceToken) . pack('n', strlen($payload)) . $payload;
+$msg = chr(0) . pack('n', 32) . pack('H*', $apns_token) . pack('n', strlen($payload)) . $payload;
 // Send it to the server
 $result = fwrite($fp, $msg, strlen($msg));
 if (!$result)
@@ -87,5 +98,5 @@ else
 	$status = "success";
 // Close the connection to the server
 fclose($fp);
-$reponse=array('status' => $status, 'token_status' => $token_status, 'token' => $deviceToken);
+$reponse=array('status' => $status, 'token_status' => $token_status, 'token' => $apns_token);
 echo json_encode($reponse);
