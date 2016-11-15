@@ -48,9 +48,134 @@
 
 }
 
+-(void) showInAppAlert:(NSDictionary*) userInfo
+{
+    TGLog(@"%@", userInfo);
+    
+    // show in-app alert
+    //UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]];
+    //AlertViewController* avc = (AlertViewController*) [storyboard        instantiateViewControllerWithIdentifier:@"ALERT_VIEW_CONTROLLER"];
+    
+    //avc.apns_data=[NSDictionary dictionaryWithDictionary:userInfo];
+    
+    //[_fvc presentViewController:avc animated:YES completion:^{}];
+    
+    
+}
+
+-(void) startApns:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+{
+    
+    // Let the device know we want to receive push notifications
+    //-- Set Notification
+    if ([application respondsToSelector:@selector(isRegisteredForRemoteNotifications)])
+    {
+        // iOS 8 Notifications
+        [application registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil]];
+        
+        [application registerForRemoteNotifications];
+    }
+    
+    // Override point for customization after application launch.
+    // Checking if application was launched by tapping icon, or push notification
+    if (!launchOptions[UIApplicationLaunchOptionsRemoteNotificationKey]) {
+        TGLog(@"processing icon tap or notification tap");
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        NSString *documentsDirectory = [paths objectAtIndex:0];
+        NSString *filePath = [documentsDirectory stringByAppendingPathComponent:@"userInfo.plist"];
+        
+        [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
+        NSDictionary *userInfo = [NSDictionary dictionaryWithContentsOfFile:filePath];
+        if (userInfo) {
+            // Launched by tapping icon
+            // ... your handling here
+            [self showInAppAlert:userInfo];
+        }
+    } else {
+        TGLog(@"processing swiped notification");
+        NSDictionary *userInfo = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
+        if (userInfo) {
+            [self showInAppAlert:userInfo];
+        }
+    }
+    
+
+}
+
+- (void)application:(UIApplication*)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData*)deviceToken
+{
+    const unsigned *tokenBytes = [deviceToken bytes];
+    NSString *hexToken = [NSString stringWithFormat:@"%08x%08x%08x%08x%08x%08x%08x%08x",
+                          ntohl(tokenBytes[0]), ntohl(tokenBytes[1]), ntohl(tokenBytes[2]),
+                          ntohl(tokenBytes[3]), ntohl(tokenBytes[4]), ntohl(tokenBytes[5]),
+                          ntohl(tokenBytes[6]), ntohl(tokenBytes[7])];
+    
+    TGLog(@"My token is: %@", deviceToken);
+    TGLog(@"My hextoken is: %@", hexToken);
+    
+    _apns_token=[NSString stringWithString:hexToken];
+}
+
+- (void)application:(UIApplication*)application didFailToRegisterForRemoteNotificationsWithError:(NSError*)error
+{
+    NSLog(@"Failed to get token, error: %@", error);
+}
+
+-(void) writeUserInfoToFile:(NSDictionary*) userInfo
+{
+    // When we get a push, just writing it to file
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    NSString *filePath = [documentsDirectory stringByAppendingPathComponent:@"userInfo.plist"];
+    [userInfo writeToFile:filePath atomically:YES];
+}
+
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(nonnull NSDictionary *)userInfo fetchCompletionHandler:(nonnull void (^)(UIBackgroundFetchResult))completionHandler
+{
+    
+    TGLog(@"APNS triggered: %@", userInfo);
+    
+    if(application.applicationState == UIApplicationStateInactive) {
+        
+        NSLog(@"Inactive");
+        
+        [self writeUserInfoToFile:userInfo];
+        //Show the view with the content of the push
+        [self showInAppAlert:userInfo];
+        
+        completionHandler(UIBackgroundFetchResultNewData);
+        
+    } else if (application.applicationState == UIApplicationStateBackground) {
+        
+        NSLog(@"Background");
+        [self writeUserInfoToFile:userInfo];
+        
+        //Refresh the local model
+        [self showInAppAlert:userInfo];
+        
+        completionHandler(UIBackgroundFetchResultNewData);
+        
+    } else {
+        
+        NSLog(@"Active");
+        
+        [self showInAppAlert:userInfo];
+        
+        completionHandler(UIBackgroundFetchResultNewData);
+        
+    }
+    
+    
+    
+    
+}
+
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     [self getGlobalVariables];
+    [self startApns:application didFinishLaunchingWithOptions:launchOptions];
+    
     return YES;
 }
 
