@@ -7,6 +7,7 @@
 //
 
 #import "SubscribeExample.h"
+#import "AppDelegate.h"
 
 @interface SubscribeExample ()
 
@@ -27,13 +28,14 @@
      */
     
     //Get our connection settings
-    
+    AppDelegate* appdel = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+
     NSMutableDictionary *dict=[NSMutableDictionary dictionaryWithCapacity:0];
     [dict addEntriesFromDictionary:[NSMutableDictionary
                                     dictionaryWithObjectsAndKeys:
-                                    @"70.29.104.248",@"domain",
+                                    appdel.stream_server_ip,@"domain",
                                     @"live", @"context",
-                                    [NSNumber numberWithInt:8554], @"port",
+                                    appdel.stream_server_port, @"port",
                                     [NSNumber numberWithBool:YES],@"showVideo",
                                     nil]];
 

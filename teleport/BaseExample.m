@@ -36,7 +36,7 @@ static BOOL _swapped = NO;
     NSLog(@"Got the stream");
     r5_set_log_level(r5_log_level_debug);
         
-     NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"connection" ofType:@"plist"]];
+    NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"connection" ofType:@"plist"]];
     
     R5Configuration *config = [[R5Configuration alloc] init];
     config.host = [dict objectForKey:@"domain"];

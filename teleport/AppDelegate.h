@@ -15,6 +15,11 @@
 
 @property (readonly, strong) NSPersistentContainer *persistentContainer;
 
+// global app variables
+// (another way to do this is to create a singleton class) - but this is easy
+@property (retain, nonatomic) NSString* stream_server_ip;
+@property (retain, nonatomic) NSNumber* stream_server_port;
+
 - (void)saveContext;
 
 

@@ -9,6 +9,7 @@
 #import "PublishExample.h"
 #import "SSKeychain.h"
 #import <Security/Security.h>
+#import "AppDelegate.h"
 
 @implementation PublishExample
 
@@ -44,7 +45,15 @@
      */
     
     //Get our connection settings
-    NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"connection" ofType:@"plist"]];
+    AppDelegate* appdel = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+    NSMutableDictionary *dict=[NSMutableDictionary dictionaryWithCapacity:0];
+    [dict addEntriesFromDictionary:[NSMutableDictionary
+                                    dictionaryWithObjectsAndKeys:
+                                    appdel.stream_server_ip,@"domain",
+                                    @"live", @"context",
+                                    appdel.stream_server_port, @"port",
+                                    [NSNumber numberWithBool:YES],@"showVideo",
+                                    nil]];
     
     //Setup a configuration object for our connection
     R5Configuration *config = [[R5Configuration alloc] init];

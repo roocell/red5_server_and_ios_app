@@ -153,6 +153,7 @@
 		7D68491B1DD5594B00267B8D /* teleport */ = {
 			isa = PBXGroup;
 			children = (
+				7D6849651DDA859700267B8D /* util.h */,
 				7D6849381DD55ED600267B8D /* connection.plist */,
 				7D6849401DD55FD100267B8D /* BaseExample.h */,
 				7D6849411DD55FD100267B8D /* BaseExample.m */,
@@ -179,7 +180,6 @@
 		7D68491C1DD5594B00267B8D /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				7D6849651DDA859700267B8D /* util.h */,
 				7D6849571DD5613100267B8D /* ALToastView */,
 				7D6849611DD907B700267B8D /* SSKeychain.h */,
 				7D6849621DD907B700267B8D /* SSKeychain.m */,

@@ -15,8 +15,42 @@
 @implementation AppDelegate
 
 
+-(void) getGlobalVariables
+{
+
+    // get streamimg server IP from our server
+    // we could probably do a DNS query - but it's probably better that the app has one location to get all information and
+    // gets the streaming IP separately because eventually each phone could be streaming to a different server instance.    
+
+    
+    NSString *dataUrl = [NSString stringWithFormat:@"%@%@",TELEPORT_REST_SERVER, @"server.php"];
+    TGLog(@"%@", dataUrl);
+    NSURL *url = [NSURL URLWithString:dataUrl];
+    NSURLSessionDataTask *downloadTask = [[NSURLSession sharedSession]
+                                          dataTaskWithURL:url completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+                                              
+                                              NSError* jsonerror;
+                                              NSDictionary* json = [NSJSONSerialization JSONObjectWithData:data
+                                                                                                   options:kNilOptions
+                                                                                                     error:&jsonerror];
+                                              _stream_server_ip=[json objectForKey:@"stream_server_ip"];
+                                              _stream_server_port=[json objectForKey:@"stream_server_port"];
+                                              
+                                              TGLog(@"stream server: %@ %@", _stream_server_ip, _stream_server_port);
+                                              
+                                              dispatch_sync(dispatch_get_main_queue(), ^{
+                                                  // Update the UI on the main thread.
+
+                                              });
+                                              
+                                          }];
+    [downloadTask resume];
+
+}
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    [self getGlobalVariables];
     return YES;
 }
 
