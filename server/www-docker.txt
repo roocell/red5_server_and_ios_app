@@ -1,0 +1,24 @@
+FROM php:5.6-apache
+
+# this is a container for a LAMP server
+# to run
+# docker run --volumes-from www -d -p 11111:80 -p 11112:443 \
+#    -e RED5IP=$(docker inspect --format='{{.NetworkSettings.IPAddress}}' myred5) \
+#    -v ~/teleport/config/php.ini:/usr/local/etc/php/php.ini \
+#    -it --link mysql:mysql --name myphp roocell/phpapache
+
+# TODO: probably should add in phpmyadmin into this dockerfile
+#       passing in docker variables to modify the config.inc.php, etc
+
+COPY config/php.ini /usr/local/etc/php/
+COPY www /var/www/html/
+
+RUN apt-get update && apt-get install -y libpng12-dev libjpeg-dev && rm -rf /var/lib/apt/lists/* \
+ 	&& docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr \
+	&& docker-php-ext-install gd
+RUN docker-php-ext-install mysqli
+RUN docker-php-ext-install pdo pdo_mysql
+RUN docker-php-ext-install mbstring
+
+
+EXPOSE 80 443
