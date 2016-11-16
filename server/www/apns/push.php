@@ -2,13 +2,16 @@
 header("Content-Type: text/json");
 error_reporting(E_ALL); ini_set('display_errors', '1');
 
+// usage
+// to call via browser
+// http://roocell.homeip.net:11111/apns/push.php?uuid=1C778026-12D2-447B-A948-13584B9C5AE0&message=this is my message
+
 // to insert row in db
 // insert into users (uuid,apns_token, lat, lon) values ("1C778026-12D2-447B-A948-13584B9C5AE0","43bc99d817ad6cf308a0e457adedfbfab9bae81f5638fca6264205845f304ddf", 0, 0)
+// insert into users (uuid,apns_token, lat, lon) values ("37D42C69-DD2A-4503-B02F-39F56F32D45B","415f2bec9b9dcae09283411ca12b9914aad5bf59c9b3fe25051c53de5e828e71", 0, 0)
 
-// to call via browser
-// http://roocell.homeip.net:11111/apns/push.php?uuid=1C778026-12D2-447B-A948-13584B9C5AE0
 
-$use_apns_sandbox=0;
+$use_apns_sandbox=1;
 
 if(!isset($_REQUEST['uuid']) || $_REQUEST['uuid']=="")
 {
@@ -53,7 +56,12 @@ $data = array ('uuid' => $uuid);
 
 
 // Put your alert message here:
-$message = "hi we would like to push you";
+if(!isset($_REQUEST['message']) || $_REQUEST['message']=="")
+{
+	$message = "<empty message>";
+} else {
+	$message = $_REQUEST['message'];
+}
 ////////////////////////////////////////////////////////////////////////////////
 // Open a connection to the APNS server
 if ($use_apns_sandbox)
