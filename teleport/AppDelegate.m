@@ -110,8 +110,8 @@
                           ntohl(tokenBytes[3]), ntohl(tokenBytes[4]), ntohl(tokenBytes[5]),
                           ntohl(tokenBytes[6]), ntohl(tokenBytes[7])];
     
-    TGLog(@"My token is: %@", deviceToken);
-    TGLog(@"My hextoken is: %@", hexToken);
+    TGLog(@"APNS token is: %@", deviceToken);
+    TGLog(@"APNS hextoken is: %@", hexToken);
     
     _apns_token=[NSString stringWithString:hexToken];
 }
