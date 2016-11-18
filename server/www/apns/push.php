@@ -1,4 +1,9 @@
 <?php
+include "../db.php";
+// at some point the permissions on this file should be changed back to 700 so that only root (docker containers) can call this script.
+// otherwise anyone outside the network can trigger push notification with the right information
+
+
 header("Content-Type: text/json");
 error_reporting(E_ALL); ini_set('display_errors', '1');
 
@@ -23,10 +28,6 @@ if(!isset($_REQUEST['uuid']) || $_REQUEST['uuid']=="")
 
 $uuid=$_REQUEST['uuid'];
 
-// get token based on $apip
-$dsn = "mysql:host=".gethostbyname('mysql').";port=3306;dbname=teleport;charset=utf8";
-$usr = 'root';
-$pwd = 'admin123';
 try {
     $db = new PDO($dsn, $usr, $pwd);
 } catch (PDOException $e) {
@@ -34,10 +35,9 @@ try {
 }
 $apns_token=0;
 $sql="SELECT * FROM users WHERE uuid='$uuid'";
-	foreach ($db->query($sql) as $row) {
-			// TODO: support multiple sentinels per ap
-			$apns_token = $row['apns_token'];
-	}
+foreach ($db->query($sql) as $row) {
+  $apns_token = $row['apns_token'];
+}
 if ($apns_token)
 {
   $token_status="found";
@@ -70,7 +70,7 @@ if ($use_apns_sandbox)
 	$ctx = stream_context_create();
 	stream_context_set_option($ctx, 'ssl', 'local_cert', 'teleport.pem');
 	stream_context_set_option($ctx, 'ssl', 'passphrase', $passphrase);
-  $fp = stream_socket_client(
+        $fp = stream_socket_client(
         'ssl://gateway.sandbox.push.apple.com:2195', $err,
         $errstr, 60, STREAM_CLIENT_CONNECT|STREAM_CLIENT_PERSISTENT, $ctx);
 } else {
@@ -78,7 +78,7 @@ if ($use_apns_sandbox)
 	$ctx = stream_context_create();
 	stream_context_set_option($ctx, 'ssl', 'local_cert', 'teleport.pem');
 	stream_context_set_option($ctx, 'ssl', 'passphrase', $passphrase);
-  $fp = stream_socket_client(
+        $fp = stream_socket_client(
 				'ssl://gateway.push.apple.com:2195', $err,
 	  		$errstr, 60, STREAM_CLIENT_CONNECT|STREAM_CLIENT_PERSISTENT, $ctx);
 }
