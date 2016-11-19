@@ -1,5 +1,8 @@
 # WEB server
-# create a www directory, download phpmyadmin
+# phpmyadmin is not in the repo - it's an external component that
+# should be downloaded (you only need to do this if you plan an RUNNING the server)
+# if you're just modifying the server code and plan up uploading to test
+# then this step can be skipped.
 curl https://files.phpmyadmin.net/phpMyAdmin/4.6.4/phpMyAdmin-4.6.4-english.tar.gz -o phpMyAdmin-4.6.4-english.tar.gz
 
 # untar phpmyadmin into www, mv config.inc.php and adjust params (blowfish)
