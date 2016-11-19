@@ -139,8 +139,8 @@ class MainViewController: UIViewController, CLLocationManagerDelegate {
                     do {
                         let json = try JSONSerialization.jsonObject(with: data!, options: .allowFragments) as! [String: Any]
                         print(json)
-                        let status = json["status"] as! [String:Any]
-                        let reason = json["reason"] as! [String:Any]
+                        let status = json["status"] as? [String:Any]
+                        let reason = json["reason"] as? [String:Any]
                         // TODO: this is always printing out nil values - haven't figure out the swift problem yet
                         print("status \(status) reason \(reason)")
                     } catch let error as NSError {

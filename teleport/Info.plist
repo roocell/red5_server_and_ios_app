@@ -2,12 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Need your location</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Need your location</string>
-	<key>privacy - location usage description</key>
-	<string>Need your location</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleExecutable</key>
@@ -23,7 +17,7 @@
 	<key>CFBundleShortVersionString</key>
 	<string>0.3</string>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>2</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -33,6 +27,10 @@
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>Red5 Pro uses your camera for live streaming</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Need your location</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Need your location</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Red5 Pro uses your microphone for live streaming</string>
 	<key>UIBackgroundModes</key>
@@ -61,5 +59,7 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>privacy - location usage description</key>
+	<string>Need your location</string>
 </dict>
 </plist>
