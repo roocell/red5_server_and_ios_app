@@ -12,7 +12,7 @@
         <!--Navigation Controller-->
         <scene sceneID="w85-ee-OLm">
             <objects>
-                <navigationController id="sYE-Wt-sgy" sceneMemberID="viewController">
+                <navigationController navigationBarHidden="YES" id="sYE-Wt-sgy" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="yL8-8Y-GDz">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -25,10 +25,10 @@
             </objects>
             <point key="canvasLocation" x="-2048" y="99"/>
         </scene>
-        <!--View Controller-->
+        <!--Main View Controller-->
         <scene sceneID="TEr-2x-RVt">
             <objects>
-                <viewController id="fHa-oV-mTb" customClass="ViewController" sceneMemberID="viewController">
+                <viewController id="fHa-oV-mTb" customClass="MainViewController" customModule="teleport" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="8vk-2n-p1t"/>
                         <viewControllerLayoutGuide type="bottom" id="KWD-nV-vXN"/>
@@ -38,29 +38,35 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="dEh-pV-f6N">
-                                <rect key="frame" x="0.0" y="64" width="320" height="504"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            </mapView>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Vmo-Cc-aox">
-                                <rect key="frame" x="16" y="174" width="39" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Menu"/>
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                 <connections>
-                                    <segue destination="cqE-7U-sh4" kind="presentation" id="oX3-yh-uw5"/>
+                                    <outlet property="delegate" destination="fHa-oV-mTb" id="eOl-oi-FZM"/>
                                 </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JzE-2y-ocK">
-                                <rect key="frame" x="243" y="173" width="49" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Record"/>
+                            </mapView>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JzE-2y-ocK">
+                                <rect key="frame" x="256" y="20" width="64" height="64"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" image="broadcast.png"/>
                                 <connections>
                                     <action selector="onPublish:" destination="fHa-oV-mTb" eventType="touchUpInside" id="A34-EX-c23"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Vmo-Cc-aox">
+                                <rect key="frame" x="10" y="20" width="64" height="64"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" backgroundImage="menu.png"/>
+                                <connections>
+                                    <segue destination="cqE-7U-sh4" kind="presentation" id="oX3-yh-uw5"/>
                                 </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <navigationItem key="navigationItem" id="Zwe-lj-zkZ"/>
+                    <connections>
+                        <outlet property="mapView" destination="dEh-pV-f6N" id="cbC-a5-erK"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="CbQ-si-1Sz" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -98,7 +104,7 @@
                                 <rect key="frame" x="0.0" y="28" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="sHi-Ju-njR" id="y3t-Ga-V2Y">
-                                    <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" tag="100" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Stream Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cCf-kh-Wzh">
@@ -145,4 +151,8 @@
             <point key="canvasLocation" x="1084" y="97"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="broadcast.png" width="512" height="512"/>
+        <image name="menu.png" width="512" height="512"/>
+    </resources>
 </document>

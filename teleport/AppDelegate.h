@@ -24,6 +24,7 @@
 
 - (void)saveContext;
 -(bool) checkUUID;
+-(void) getServer;
 
 @end
 

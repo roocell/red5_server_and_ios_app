@@ -55,10 +55,43 @@
     // cannot publish until we've registered the user and created a UUID
     if ([appdel checkUUID]==false)
     {
-        TGLog(@"Cannot publush yet - no UUID");
+        TGLog(@"Cannot publish yet - no UUID");
         return;
     }
     [self showExample:[PublishExample new]];
+}
+
+
+#pragma mark MAPVIEW DELEGATES
+- (void)mapView:(MKMapView *)mapView didAddAnnotationViews:(NSArray *)views
+{
+    
+}
+- (void)mapViewDidFinishLoadingMap:(MKMapView *)mapView
+{
+    
+}
+- (void)mapView:(MKMapView *)mapView didDeselectAnnotationView:(MKAnnotationView *)view
+{
+    
+}
+- (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view
+{
+    TGLog(@"");
+    if ([view annotation] == mapView.userLocation){
+        return;
+    }
+    
+    
+}
+
+- (void)mapView:(MKMapView *)mapView didUpdateUserLocation:(MKUserLocation *)userLocation
+{
+    
+}
+- (void)mapView:(MKMapView *)mapView regionDidChangeAnimated:(BOOL)animated
+{
+    
 }
 
 @end

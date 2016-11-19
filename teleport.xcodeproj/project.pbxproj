@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7D0D84761DE0051400830F0D /* broadcast.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D0D84741DE0051400830F0D /* broadcast.png */; };
+		7D0D84771DE0051400830F0D /* menu.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D0D84751DE0051400830F0D /* menu.png */; };
+		7D0D84791DE006BA00830F0D /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D0D84781DE006BA00830F0D /* CoreLocation.framework */; };
+		7D0D847C1DE00AAE00830F0D /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D0D847B1DE00AAE00830F0D /* MainViewController.swift */; };
 		7D68491E1DD5594B00267B8D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D68491D1DD5594B00267B8D /* main.m */; };
 		7D6849211DD5594B00267B8D /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D6849201DD5594B00267B8D /* AppDelegate.m */; };
 		7D6849241DD5594B00267B8D /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D6849231DD5594B00267B8D /* ViewController.m */; };
@@ -42,6 +46,11 @@
 		15CE398A8481C00423B931CA /* Pods-teleport.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-teleport.release.xcconfig"; path = "Pods/Target Support Files/Pods-teleport/Pods-teleport.release.xcconfig"; sourceTree = "<group>"; };
 		3BC17966F91B35EB82DE0842 /* Pods_teleport.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_teleport.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7D0D84731DDB9CB700830F0D /* teleport.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = teleport.entitlements; sourceTree = "<group>"; };
+		7D0D84741DE0051400830F0D /* broadcast.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = broadcast.png; path = images/broadcast.png; sourceTree = "<group>"; };
+		7D0D84751DE0051400830F0D /* menu.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = menu.png; path = images/menu.png; sourceTree = "<group>"; };
+		7D0D84781DE006BA00830F0D /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		7D0D847A1DE00AAD00830F0D /* teleport-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "teleport-Bridging-Header.h"; sourceTree = "<group>"; };
+		7D0D847B1DE00AAE00830F0D /* MainViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		7D6849191DD5594B00267B8D /* teleport.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = teleport.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7D68491D1DD5594B00267B8D /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		7D68491F1DD5594B00267B8D /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -90,6 +99,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7D0D84791DE006BA00830F0D /* CoreLocation.framework in Frameworks */,
 				7D6849601DD5631200267B8D /* MapKit.framework in Frameworks */,
 				7D68495E1DD5626300267B8D /* libiconv.2.4.0.tbd in Frameworks */,
 				7D68495C1DD5625700267B8D /* libstdc++.6.0.9.tbd in Frameworks */,
@@ -114,6 +124,7 @@
 		182A96AF2EECF42BAA6CF4FB /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				7D0D84781DE006BA00830F0D /* CoreLocation.framework */,
 				7D68495F1DD5631200267B8D /* MapKit.framework */,
 				7D68495D1DD5626300267B8D /* libiconv.2.4.0.tbd */,
 				7D68495B1DD5625700267B8D /* libstdc++.6.0.9.tbd */,
@@ -167,6 +178,7 @@
 				7D6849201DD5594B00267B8D /* AppDelegate.m */,
 				7D6849661DDA864900267B8D /* MenuTableViewController.h */,
 				7D6849671DDA864900267B8D /* MenuTableViewController.m */,
+				7D0D847B1DE00AAE00830F0D /* MainViewController.swift */,
 				7D6849221DD5594B00267B8D /* ViewController.h */,
 				7D6849231DD5594B00267B8D /* ViewController.m */,
 				7D6849251DD5594B00267B8D /* Main.storyboard */,
@@ -175,6 +187,7 @@
 				7D6849301DD5594B00267B8D /* Info.plist */,
 				7D6849281DD5594B00267B8D /* teleport.xcdatamodeld */,
 				7D68491C1DD5594B00267B8D /* Supporting Files */,
+				7D0D847A1DE00AAD00830F0D /* teleport-Bridging-Header.h */,
 			);
 			path = teleport;
 			sourceTree = "<group>";
@@ -182,6 +195,8 @@
 		7D68491C1DD5594B00267B8D /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				7D0D84741DE0051400830F0D /* broadcast.png */,
+				7D0D84751DE0051400830F0D /* menu.png */,
 				7D6849571DD5613100267B8D /* ALToastView */,
 				7D6849611DD907B700267B8D /* SSKeychain.h */,
 				7D6849621DD907B700267B8D /* SSKeychain.m */,
@@ -281,6 +296,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				7D68492F1DD5594B00267B8D /* LaunchScreen.storyboard in Resources */,
+				7D0D84761DE0051400830F0D /* broadcast.png in Resources */,
+				7D0D84771DE0051400830F0D /* menu.png in Resources */,
 				7D68492C1DD5594B00267B8D /* Assets.xcassets in Resources */,
 				7D6849391DD55ED600267B8D /* connection.plist in Resources */,
 				7D6849271DD5594B00267B8D /* Main.storyboard in Resources */,
@@ -343,6 +360,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7D68492A1DD5594B00267B8D /* teleport.xcdatamodeld in Sources */,
+				7D0D847C1DE00AAE00830F0D /* MainViewController.swift in Sources */,
 				7D68493C1DD55EF500267B8D /* PublishExample.m in Sources */,
 				7D6849241DD5594B00267B8D /* ViewController.m in Sources */,
 				7D68495A1DD5613100267B8D /* ALToastView.m in Sources */,
@@ -477,6 +495,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = teleport/teleport.entitlements;
 				DEVELOPMENT_TEAM = SUKAFQ5426;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -490,6 +509,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.thumbgenius.teleport;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "teleport/teleport-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
@@ -500,6 +521,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = teleport/teleport.entitlements;
 				DEVELOPMENT_TEAM = SUKAFQ5426;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -513,6 +535,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.thumbgenius.teleport;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "teleport/teleport-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Release;

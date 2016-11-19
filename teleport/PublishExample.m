@@ -18,7 +18,7 @@
     //set up the publisher - short method
     //self.publish = [self getNewStream:PUBLISH];
     
-    
+    [self.navigationController setNavigationBarHidden:NO animated:animated];
     
     /*
      * 

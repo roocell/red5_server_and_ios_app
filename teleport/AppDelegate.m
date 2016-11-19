@@ -16,7 +16,7 @@
 @implementation AppDelegate
 
 
--(void) getGlobalVariables
+-(void) getServer
 {
 
     // get streamimg server IP from our server
@@ -24,28 +24,35 @@
     // gets the streaming IP separately because eventually each phone could be streaming to a different server instance.    
 
     
-    NSString *dataUrl = [NSString stringWithFormat:@"%@%@",TELEPORT_REST_SERVER, @"server.php"];
-    TGLog(@"%@", dataUrl);
-    NSURL *url = [NSURL URLWithString:dataUrl];
-    NSURLSessionDataTask *downloadTask = [[NSURLSession sharedSession]
-                                          dataTaskWithURL:url completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-                                              
-                                              NSError* jsonerror;
-                                              NSDictionary* json = [NSJSONSerialization JSONObjectWithData:data
-                                                                                                   options:kNilOptions
-                                                                                                     error:&jsonerror];
-                                              _stream_server_ip=[json objectForKey:@"stream_server_ip"];
-                                              _stream_server_port=[json objectForKey:@"stream_server_port"];
-                                              
-                                              TGLog(@"stream server: %@ %@", _stream_server_ip, _stream_server_port);
-                                              
-                                              dispatch_sync(dispatch_get_main_queue(), ^{
-                                                  // Update the UI on the main thread.
+    NSString *url = [NSString stringWithFormat:@"%@%@",TELEPORT_REST_SERVER, @"server.php"];
+    TGLog(@"%@", url);
+    NSURLSession *session = [NSURLSession sharedSession];
+    [[session dataTaskWithURL:[NSURL URLWithString:url]
+            completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+                // handle response
+                if (error) {
+                    TGLog(@"FAILED");
+                } else {
+                    NSError* jsonerror;
+                    NSDictionary* json = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&jsonerror];
+                    if (jsonerror != nil) {
+                        NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;
+                        TGLog(@"response status code: %ld", (long)[httpResponse statusCode]);
+                        TGLog(@"%@", jsonerror);
+                        return;
+                    }
 
-                                              });
-                                              
-                                          }];
-    [downloadTask resume];
+                    _stream_server_ip=[json objectForKey:@"stream_server_ip"];
+                    _stream_server_port=[json objectForKey:@"stream_server_port"];
+                    
+                    TGLog(@"stream server: %@ %@", _stream_server_ip, _stream_server_port);
+                    
+                    dispatch_sync(dispatch_get_main_queue(), ^{
+                        // Update the UI on the main thread.
+                        
+                    });
+                }
+               }] resume];
 
 }
 
@@ -71,7 +78,7 @@
         // this is the one time process
     }
 
-    NSString *userUrl = [NSString stringWithFormat:USER_URL, _uuid, _apns_token];
+    NSString *userUrl = [NSString stringWithFormat:REGISTER_USER_URL, _uuid, _apns_token];
     
     NSURLSession *session = [NSURLSession sharedSession];
     [[session dataTaskWithURL:[NSURL URLWithString:userUrl]
@@ -79,13 +86,14 @@
                 // handle response
                 if (error) {
                     TGLog(@"FAILED");
+                    return;
                 } else {
                     // check the status
-                    NSError *localError = nil;
-                    NSDictionary *parsedObject = [NSJSONSerialization JSONObjectWithData:data options:0 error:&localError];
+                    NSError *jsonerror = nil;
+                    NSDictionary *parsedObject = [NSJSONSerialization JSONObjectWithData:data options:0 error:&jsonerror];
                     
-                    if (localError != nil) {
-                        TGLog(@"%@", localError);
+                    if (jsonerror != nil) {
+                        TGLog(@"%@", jsonerror);
                         return;
                     }
                     TGLog(@"%@", parsedObject);
@@ -235,7 +243,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
-    [self getGlobalVariables];
+    [self getServer];
     [self startApns:application didFinishLaunchingWithOptions:launchOptions];
     
     return YES;
