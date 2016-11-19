@@ -20,9 +20,10 @@
 @property (retain, nonatomic) NSString* stream_server_ip;
 @property (retain, nonatomic) NSNumber* stream_server_port;
 @property (strong, nonatomic) NSString *apns_token;
+@property (strong, nonatomic) NSString *uuid;
 
 - (void)saveContext;
-
+-(bool) checkUUID;
 
 @end
 

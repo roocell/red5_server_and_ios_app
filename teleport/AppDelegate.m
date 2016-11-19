@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "SSKeychain.h"
 
 @interface AppDelegate ()
 
@@ -46,6 +47,66 @@
                                           }];
     [downloadTask resume];
 
+}
+
+// using UUID to create a unique identifier for the device which I can use in the stream name when publishing
+// in the future this could probably be a username or facebook hashed userid thing
+- (NSString *)createNewUUID
+{
+    CFUUIDRef theUUID = CFUUIDCreate(NULL);
+    CFStringRef string = CFUUIDCreateString(NULL, theUUID);
+    CFRelease(theUUID);
+    return CFBridgingRelease(string);
+}
+
+
+-(void) registerUser
+{
+    // getting the unique key (if present ) from keychain , assuming "your app identifier" as a key
+    _uuid = [SSKeychain passwordForService:@"com.thumbgenius.teleport" account:@"uuid"];
+    if (_uuid == nil) { // if this is the first time app lunching , create key for device
+        _uuid  = [self createNewUUID];
+        // save newly created key to Keychain
+        [SSKeychain setPassword:_uuid forService:@"com.thumbgenius.teleport" account:@"uuid"];
+        // this is the one time process
+    }
+
+    NSString *userUrl = [NSString stringWithFormat:USER_URL, _uuid, _apns_token];
+    
+    NSURLSession *session = [NSURLSession sharedSession];
+    [[session dataTaskWithURL:[NSURL URLWithString:userUrl]
+            completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+                // handle response
+                if (error) {
+                    TGLog(@"FAILED");
+                } else {
+                    // check the status
+                    NSError *localError = nil;
+                    NSDictionary *parsedObject = [NSJSONSerialization JSONObjectWithData:data options:0 error:&localError];
+                    
+                    if (localError != nil) {
+                        TGLog(@"%@", localError);
+                        return;
+                    }
+                    TGLog(@"%@", parsedObject);
+                    NSString *status = [parsedObject valueForKey:@"status"];
+                    NSString *reason = [parsedObject valueForKey:@"reason"];
+                    TGLog(@"%@ status %@ reason %@", userUrl, status, reason);
+
+                }
+            }] resume];
+
+}
+
+-(bool) checkUUID
+{
+    if (_uuid) return true;
+    else {
+        // should probably try registering again in case there was no internet connection when we tried last time
+        // registerUser could take time since it's accessing the internet - we need to return false here and let the user try again.
+        [self registerUser];
+        return false;
+    }
 }
 
 -(void) showInAppAlert:(NSDictionary*) userInfo
@@ -114,6 +175,7 @@
     TGLog(@"APNS hextoken is: %@", hexToken);
     
     _apns_token=[NSString stringWithString:hexToken];
+    [self registerUser];
 }
 
 - (void)application:(UIApplication*)application didFailToRegisterForRemoteNotificationsWithError:(NSError*)error

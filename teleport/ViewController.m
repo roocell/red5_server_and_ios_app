@@ -8,6 +8,7 @@
 
 #import "ViewController.h"
 #import "PublishExample.h"
+#import "AppDelegate.h"
 
 @interface ViewController ()
 
@@ -49,7 +50,14 @@
 }
 
 - (IBAction)onPublish:(id)sender {
-    
+    APPDEL;
+
+    // cannot publish until we've registered the user and created a UUID
+    if ([appdel checkUUID]==false)
+    {
+        TGLog(@"Cannot publush yet - no UUID");
+        return;
+    }
     [self showExample:[PublishExample new]];
 }
 

@@ -7,35 +7,17 @@
 //
 
 #import "PublishExample.h"
-#import "SSKeychain.h"
 #import <Security/Security.h>
 #import "AppDelegate.h"
 
 @implementation PublishExample
 
-// using UUID to create a unique identifier for the device which I can use in the stream name when publishing
-// in the future this could probably be a username or facebook hashed userid thing
-- (NSString *)createNewUUID
-{
-    CFUUIDRef theUUID = CFUUIDCreate(NULL);
-    CFStringRef string = CFUUIDCreateString(NULL, theUUID);
-    CFRelease(theUUID);
-    return CFBridgingRelease(string);
-}
 
 -(void)viewDidAppear:(BOOL)animated{
     
     //set up the publisher - short method
     //self.publish = [self getNewStream:PUBLISH];
     
-    // getting the unique key (if present ) from keychain , assuming "your app identifier" as a key
-    NSString *retrieveuuid = [SSKeychain passwordForService:@"com.thumbgenius.teleport" account:@"user"];
-    if (retrieveuuid == nil) { // if this is the first time app lunching , create key for device
-        NSString *uuid  = [self createNewUUID];
-        // save newly created key to Keychain
-        [SSKeychain setPassword:uuid forService:@"com.thumbgenius.teleport" account:@"user"];
-        // this is the one time process
-    }
     
     
     /*
@@ -45,7 +27,7 @@
      */
     
     //Get our connection settings
-    AppDelegate* appdel = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+    APPDEL;
     NSMutableDictionary *dict=[NSMutableDictionary dictionaryWithCapacity:0];
     [dict addEntriesFromDictionary:[NSMutableDictionary
                                     dictionaryWithObjectsAndKeys:
@@ -110,9 +92,9 @@
     
     //start publishing!
     //[self.publish publish:[self getStreamName:PUBLISH] type:R5RecordTypeLive];
-    NSString* stream_identifier=[NSString stringWithFormat:@"%@-%@",
-                                 [SSKeychain passwordForService:@"com.thumbgenius.teleport" account:@"user"],
-                                 @"streamname"];
+    
+    // using uuid for stream id name (assuming one stream per uuid)
+    NSString* stream_identifier=[NSString stringWithFormat:@"%@",appdel.uuid];
     [self.publish publish:stream_identifier type:R5RecordTypeLive];
     
 }
