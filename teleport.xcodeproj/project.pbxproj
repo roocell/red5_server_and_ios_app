@@ -39,6 +39,7 @@
 		7D6849601DD5631200267B8D /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D68495F1DD5631200267B8D /* MapKit.framework */; };
 		7D6849631DD907B700267B8D /* SSKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D6849621DD907B700267B8D /* SSKeychain.m */; };
 		7D6849681DDA864900267B8D /* MenuTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D6849671DDA864900267B8D /* MenuTableViewController.m */; };
+		7D88303B1DE11E0E00DF87AB /* MainMenuTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D88303A1DE11E0E00DF87AB /* MainMenuTableViewController.m */; };
 		9B879223F25322106CB6DA49 /* Pods_teleport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BC17966F91B35EB82DE0842 /* Pods_teleport.framework */; };
 /* End PBXBuildFile section */
 
@@ -91,6 +92,8 @@
 		7D6849661DDA864900267B8D /* MenuTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MenuTableViewController.h; sourceTree = "<group>"; };
 		7D6849671DDA864900267B8D /* MenuTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MenuTableViewController.m; sourceTree = "<group>"; };
 		7D6849691DDA875700267B8D /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
+		7D8830391DE11E0E00DF87AB /* MainMenuTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainMenuTableViewController.h; sourceTree = "<group>"; };
+		7D88303A1DE11E0E00DF87AB /* MainMenuTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainMenuTableViewController.m; sourceTree = "<group>"; };
 		DB486F4E97EA88CF4CEC78CE /* Pods-teleport.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-teleport.debug.xcconfig"; path = "Pods/Target Support Files/Pods-teleport/Pods-teleport.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -176,6 +179,8 @@
 				7D68493B1DD55EF500267B8D /* PublishExample.m */,
 				7D68491F1DD5594B00267B8D /* AppDelegate.h */,
 				7D6849201DD5594B00267B8D /* AppDelegate.m */,
+				7D8830391DE11E0E00DF87AB /* MainMenuTableViewController.h */,
+				7D88303A1DE11E0E00DF87AB /* MainMenuTableViewController.m */,
 				7D6849661DDA864900267B8D /* MenuTableViewController.h */,
 				7D6849671DDA864900267B8D /* MenuTableViewController.m */,
 				7D0D847B1DE00AAE00830F0D /* MainViewController.swift */,
@@ -364,6 +369,7 @@
 				7D68493C1DD55EF500267B8D /* PublishExample.m in Sources */,
 				7D6849241DD5594B00267B8D /* ViewController.m in Sources */,
 				7D68495A1DD5613100267B8D /* ALToastView.m in Sources */,
+				7D88303B1DE11E0E00DF87AB /* MainMenuTableViewController.m in Sources */,
 				7D6849681DDA864900267B8D /* MenuTableViewController.m in Sources */,
 				7D68493F1DD55F6300267B8D /* SubscribeExample.m in Sources */,
 				7D6849631DD907B700267B8D /* SSKeychain.m in Sources */,

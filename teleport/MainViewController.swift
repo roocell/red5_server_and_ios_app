@@ -30,12 +30,13 @@ class MainViewController: UIViewController, CLLocationManagerDelegate {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        // http://stackoverflow.com/questions/19042894/periodic-ios-background-location-updates
         seenError = false
         locationFixAchieved = false
         locationManager = CLLocationManager()
         locationManager.delegate = self
-        locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        
+        locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
+        locationManager.distanceFilter = 300
         locationManager.requestAlwaysAuthorization()
 
 
@@ -139,8 +140,8 @@ class MainViewController: UIViewController, CLLocationManagerDelegate {
                     do {
                         let json = try JSONSerialization.jsonObject(with: data!, options: .allowFragments) as! [String: Any]
                         print(json)
-                        let status = json["status"] as? [String:Any]
-                        let reason = json["reason"] as? [String:Any]
+                        let status = json["status"] as! String
+                        let reason = json["reason"] as! String
                         // TODO: this is always printing out nil values - haven't figure out the swift problem yet
                         print("status \(status) reason \(reason)")
                     } catch let error as NSError {

@@ -8,12 +8,109 @@
 
 #import "MenuTableViewController.h"
 #import "SubscribeExample.h"
+#import "AppDelegate.h"
+#import "ALToastView.h"
 
 @interface MenuTableViewController ()
 
 @end
 
 @implementation MenuTableViewController
+
+
+// can retrieve the streams or the users
+-(void) getItems:(NSString*)url
+{
+    // get streams from server
+    // https://www.raywenderlich.com/67081/cookbook-using-nsurlsession
+    // more modern way than dataWithContentsOfURL
+
+    TGLog(@"%@", url);
+    NSURL *nsurl = [NSURL URLWithString:url];
+    NSURLSessionDataTask *downloadTask = [[NSURLSession sharedSession]
+          dataTaskWithURL:nsurl completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+              if (error) {
+                  TGLog(@"FAILED");
+                  return;
+              }
+              
+              NSError* jsonerror;
+              NSDictionary* json = [NSJSONSerialization JSONObjectWithData:data
+                                                                   options:NSJSONReadingAllowFragments
+                                                                     error:&jsonerror];
+              
+              if (jsonerror != nil) {
+                  NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;
+                  TGLog(@"response status code: %ld", (long)[httpResponse statusCode]);
+                  TGLog(@"%@", jsonerror);
+                  return;
+              }
+              
+              if (![[json objectForKey:@"status"] isEqualToString:@"success"])
+              {
+                  TGLog(@"ERR: failed for %@ reason %@", _mainMenuRow, [json objectForKey:@"status"]);
+                  return;
+              }
+
+              
+              _items = [NSMutableArray arrayWithArray:[json objectForKey:@"data"]];
+              
+              TGLog(@"%@ items: %@", _mainMenuRow, _items);
+              
+              dispatch_sync(dispatch_get_main_queue(), ^{
+                  // Update the UI on the main thread.
+                  [self.tableView reloadData];
+              });
+              
+          }];
+    [downloadTask resume];
+
+}
+
+-(void) contactUser:(NSString*)uuid withMessage:(NSString*) message
+{
+    APPDEL;
+    NSString *url = [NSString stringWithFormat:@"http://roocell.homeip.net:11111/user.php?cmd=contact&uuid=%@&dest_uuid=%@&message=%@", appdel.uuid, uuid, message];
+    TGLog(@"%@", url);
+    NSURL *nsurl = [NSURL URLWithString:url];
+    NSURLSessionDataTask *downloadTask = [[NSURLSession sharedSession]
+      dataTaskWithURL:nsurl completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+          if (error) {
+              TGLog(@"FAILED");
+              return;
+          }
+          
+          NSError* jsonerror;
+          NSDictionary* json = [NSJSONSerialization JSONObjectWithData:data
+                                                               options:NSJSONReadingAllowFragments
+                                                                 error:&jsonerror];
+          
+          if (jsonerror != nil) {
+              NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;
+              TGLog(@"response status code: %ld", (long)[httpResponse statusCode]);
+              TGLog(@"%@", jsonerror);
+              return;
+          }
+          
+          if (![[json objectForKey:@"status"] isEqualToString:@"success"])
+          {
+              TGLog(@"ERR: failed for %@ reason %@", _mainMenuRow, [json objectForKey:@"status"]);
+              return;
+          }
+          
+          TGLog(@"contacted %@:%@", uuid, message);
+          
+          [ALToastView toastInView:[[[UIApplication sharedApplication] keyWindow] rootViewController].view withText:[NSString stringWithFormat:@"contacted %@:%@", uuid, message]];
+          
+          dispatch_sync(dispatch_get_main_queue(), ^{
+              // Update the UI on the main thread.
+              [self.tableView reloadData];
+          });
+          
+      }];
+    [downloadTask resume];
+    
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -24,32 +121,24 @@
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
     
-    // get streams from server
-    // https://www.raywenderlich.com/67081/cookbook-using-nsurlsession
-    // more modern way than dataWithContentsOfURL
     
-    NSString *dataUrl = @"http://roocell.homeip.net:11111/red5list.php";
-    NSURL *url = [NSURL URLWithString:dataUrl];
-    NSURLSessionDataTask *downloadTask = [[NSURLSession sharedSession]
-                                          dataTaskWithURL:url completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-                                              
-                                              NSError* jsonerror;
-                                              NSDictionary* json = [NSJSONSerialization JSONObjectWithData:data
-                                                                                                   options:kNilOptions
-                                                                                                     error:&jsonerror];
-                                              
-                                              _streams = [NSMutableArray arrayWithArray:[json objectForKey:@"data"]];
-                                              
-                                              TGLog(@"streams: %@", _streams);
-                            
-                                              dispatch_sync(dispatch_get_main_queue(), ^{
-                                                  // Update the UI on the main thread.
-                                                  [self.tableView reloadData];
-                                              });
+    if ([_mainMenuRow isEqualToString:@"Streams"])
+    {
+        NSString *url = @"http://roocell.homeip.net:11111/red5list.php";
+        [self getItems:url];
+    } else if ([_mainMenuRow isEqualToString:@"Users"]) {
+        APPDEL;
+        NSString *url = [NSString stringWithFormat:@"http://roocell.homeip.net:11111/user.php?cmd=getusers&uuid=%@", appdel.uuid];
+        [self getItems:url];
+    }
 
-                                          }];
-    [downloadTask resume];
-    
+}
+
+-(void)viewDidAppear:(BOOL)animated
+{
+    // because the orginal navigationController hid the navbar
+    [self.navigationController setNavigationBarHidden:NO animated:animated];
+
 }
 
 - (void)didReceiveMemoryWarning {
@@ -64,12 +153,18 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [_streams count];
+    return [_items count];
 }
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {  
-    static NSString *CellIdentifier = @"STREAM_TABLE_CELL";
+    // we can have the same class do different formatting of this second level menu
+    // also allows us to have different segues (in IB) to different view controllers for each meny selection
+    NSString *CellIdentifier = @"STREAM_TABLE_CELL";
+    if ([_mainMenuRow isEqualToString:@"Users"])
+    {
+        CellIdentifier = @"USER_TABLE_CELL";
+    }
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
@@ -77,12 +172,24 @@
     }
 
     // Configure the cell...
-    UILabel *nameLabel = (UILabel *)[cell viewWithTag:100];
-    nameLabel.text=[_streams objectAtIndex:[indexPath row]];
+    UILabel *label = (UILabel *)[cell viewWithTag:1];
+    label.text=[_items objectAtIndex:[indexPath row]];
     return cell;
 }
 
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    //UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    //UILabel *label = (UILabel *)[cell viewWithTag:1];
 
+    if ([_mainMenuRow isEqualToString:@"Users"])
+    {
+        NSString* uuid=[_items objectAtIndex:[indexPath row]];
+        TGLog(@"Selected %@", uuid);
+        [self contactUser:uuid withMessage:@"Please take a video"];
+    } else {
+        // a segue in IB takes care of this case.
+    }
+}
 /*
 // Override to support conditional editing of the table view.
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -131,7 +238,7 @@
     {
         SubscribeExample  *vc = [segue destinationViewController];
         NSIndexPath* indexPath=[self.tableView indexPathForSelectedRow];
-        vc.stream=[_streams objectAtIndex:[indexPath row]];
+        vc.stream=[_items objectAtIndex:[indexPath row]];
     }
 }
 

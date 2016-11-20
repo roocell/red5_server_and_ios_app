@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface MenuTableViewController : UITableViewController
-@property (retain, nonatomic) NSMutableArray* streams;
+@property (retain, nonatomic) NSMutableArray* items;
 
+@property (retain, nonatomic) NSString* mainMenuRow;
 @end
