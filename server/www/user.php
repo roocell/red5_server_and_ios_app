@@ -5,7 +5,12 @@
 
 // http://roocell.homeip.net:11111/user.php?cmd=update&uuid=thisismyuuid&&lat=1&lon=1
 
-include "db.php";
+// http://roocell.homeip.net:11111/user.php?cmd=getusers&uuid=myuuid
+
+// http://roocell.homeip.net:11111/user.php?cmd=contact&uuid=myuuid&dest_uuid=theiruuid&message=mymessagetext
+
+include "apns/push.php"; // will also include db.php
+
 header("Content-Type: text/json");
 error_reporting(E_ALL); ini_set('display_errors', '1');
 
@@ -57,12 +62,42 @@ switch ($cmd)
     break;
   case "update":
     $sql = "UPDATE users SET lat='$lat',lon='$lon' WHERE uuid='$uuid'";
-    $rc = $db->query($sql);
-    if ($rc) echo json_encode(array("status"=>"success", "reason"=>"updated","uuid"=>"$uuid"));
+    $res = $db->query($sql);
+    if ($res) echo json_encode(array("status"=>"success", "reason"=>"updated","uuid"=>"$uuid"));
     else echo json_encode(array("status"=>"failed", "error"=>"failed to update", "mysql_rc"=>$db->errorInfo()));
+    break;
+  case "getuuids":
+    $sql = "SELECT uuid FROM users WHERE 1";
+    $res = $db->query($sql);
+    if ($res) echo json_encode(array("status"=>"success", "data"=>$res->fetchAll(PDO::FETCH_COLUMN,0)));
+    else echo json_encode(array("status"=>"failed", "error"=>"sql error", "mysql_rc"=>$db->errorInfo()));
+    break;
+  case "getusers":
+    // TODO: probably shouldn't be sending the apns_token in this
+    $sql = "SELECT * FROM users WHERE 1";
+    $res = $db->query($sql);
+    if ($res) echo json_encode(array("status"=>"success", "data"=>$res->fetchAll()));
+    else echo json_encode(array("status"=>"failed", "error"=>"sql error", "mysql_rc"=>$db->errorInfo()));
+    break;
+  case "contact":
+    // dest_uuid required
+    if(!isset($_REQUEST['dest_uuid']) || $_REQUEST['dest_uuid']=="")
+    {
+            $msg = array ('status' => 'invalid_input');
+            echo json_encode($msg);
+            exit();
+    }
+    $dest_uuid=$_REQUEST['dest_uuid'];
+    $message="hello you";
+    if(isset($_REQUEST['message'])) $message=$_REQUEST['message'];
+
+    // send a push notification
+    $result=sendpush($dest_uuid,$message);
+  	echo json_encode($result);
+
     break;
 
 }
-$db=NULL;
+$db=NULL; // required to free resources
 
 ?>
