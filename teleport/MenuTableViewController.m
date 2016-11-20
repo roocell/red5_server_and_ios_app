@@ -18,6 +18,7 @@
 @implementation MenuTableViewController
 
 
+// TODO: move to ServerComms
 // can retrieve the streams or the users
 -(void) getItems:(NSString*)url
 {
@@ -30,7 +31,7 @@
     NSURLSessionDataTask *downloadTask = [[NSURLSession sharedSession]
           dataTaskWithURL:nsurl completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
               if (error) {
-                  TGLog(@"FAILED");
+                  TGLog(@"FAILED %@", error);
                   return;
               }
               
@@ -67,16 +68,19 @@
 
 }
 
+// TODO: move to ServerComms
 -(void) contactUser:(NSString*)uuid withMessage:(NSString*) message
 {
     APPDEL;
     NSString *url = [NSString stringWithFormat:@"http://roocell.homeip.net:11111/user.php?cmd=contact&uuid=%@&dest_uuid=%@&message=%@", appdel.uuid, uuid, message];
     TGLog(@"%@", url);
-    NSURL *nsurl = [NSURL URLWithString:url];
+    NSString * encodedUrl = [url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLFragmentAllowedCharacterSet]];
+    //NSString* encodedUrl = [url stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    NSURL *nsurl = [NSURL URLWithString:encodedUrl];
     NSURLSessionDataTask *downloadTask = [[NSURLSession sharedSession]
       dataTaskWithURL:nsurl completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
           if (error) {
-              TGLog(@"FAILED");
+              TGLog(@"FAILED %@", error);
               return;
           }
           
@@ -128,7 +132,7 @@
         [self getItems:url];
     } else if ([_mainMenuRow isEqualToString:@"Users"]) {
         APPDEL;
-        NSString *url = [NSString stringWithFormat:@"http://roocell.homeip.net:11111/user.php?cmd=getusers&uuid=%@", appdel.uuid];
+        NSString *url = [NSString stringWithFormat:@"http://roocell.homeip.net:11111/user.php?cmd=getuuids&uuid=%@", appdel.uuid];
         [self getItems:url];
     }
 

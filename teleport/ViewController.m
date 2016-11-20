@@ -35,8 +35,7 @@
     NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"connection" ofType:@"plist"]];
     
     if([[dict objectForKey:@"domain"] isEqualToString:@"0.0.0.0"]){
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"No Server!" message:@"Set the domain in your connection.plist!" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-        [alert show];
+        TGLog(@"no server@");
         return;
         
     }

@@ -15,36 +15,10 @@
 
 @implementation AppDelegate
 
--(void) testUserPhpLocationUpdate
-{
-    // just want to debug fuckin swift
-    NSString *url = [NSString stringWithFormat:@"http://roocell.homeip.net:11111/user.php?cmd=update&uuid=abc123&lat=02&lon=0.1"];
-    TGLog(@"%@", url);
-    NSURLSession *session = [NSURLSession sharedSession];
-    [[session dataTaskWithURL:[NSURL URLWithString:url]
-            completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-                // handle response
-                if (error) {
-                    TGLog(@"FAILED");
-                } else {
-                    NSError* jsonerror;
-                    NSDictionary* json = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&jsonerror];
-                    if (jsonerror != nil) {
-                        NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;
-                        TGLog(@"response status code: %ld", (long)[httpResponse statusCode]);
-                        TGLog(@"%@", jsonerror);
-                        return;
-                    }
-                    TGLog(@"%@", json);
-                    TGLog(@"status %@ reason %@", [json objectForKey:@"status"], [json objectForKey:@"reason"]);
-                }
-            }] resume];
-    
-}
 
+// TODO: move to ServerComms
 -(void) getServer
 {
-    [self testUserPhpLocationUpdate];
     // get streamimg server IP from our server
     // we could probably do a DNS query - but it's probably better that the app has one location to get all information and
     // gets the streaming IP separately because eventually each phone could be streaming to a different server instance.    
@@ -92,9 +66,10 @@
     return CFBridgingRelease(string);
 }
 
-
--(void) registerUser
+-(void) getUuid
 {
+    // get UUID from persistant store or creates a new one and stores it.
+
     // getting the unique key (if present ) from keychain , assuming "your app identifier" as a key
     _uuid = [SSKeychain passwordForService:@"com.thumbgenius.teleport" account:@"uuid"];
     if (_uuid == nil) { // if this is the first time app lunching , create key for device
@@ -103,6 +78,11 @@
         [SSKeychain setPassword:_uuid forService:@"com.thumbgenius.teleport" account:@"uuid"];
         // this is the one time process
     }
+}
+
+// TODO: move to ServerComms
+-(void) registerUser
+{
 
     NSString *userUrl = [NSString stringWithFormat:REGISTER_USER_URL, _uuid, _apns_token];
     
@@ -160,6 +140,8 @@
 
 -(void) startApns:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    // get UUID first - a lot of other classes depend on this existing prior to doing things
+    [self getUuid];
     
     // Let the device know we want to receive push notifications
     //-- Set Notification
