@@ -7,7 +7,7 @@ header("Content-Type: text/json");
 // this script is used by the iphone app at startup to get knowledge of what streaming server to use
 
 // for now just return the public IP of my server at home
-$ip = file_get_contents('https://api.ipify.org');
+$ip = file_get_contents('http://api.ipify.org');
 
 // Will dump a beauty json :3
 //var_dump(json_decode($result, true));
