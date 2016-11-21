@@ -19,6 +19,5 @@
 
 
 #define TELEPORT_REST_SERVER @"http://roocell.homeip.net:11111/"
-#define REGISTER_USER_URL @"http://roocell.homeip.net:11111/user.php?cmd=add&uuid=%@&apns_token=%@"
 
 #define APPDEL  AppDelegate* appdel = (AppDelegate*)[[UIApplication sharedApplication] delegate]

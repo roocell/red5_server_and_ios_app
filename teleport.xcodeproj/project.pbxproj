@@ -13,7 +13,6 @@
 		7D0D847C1DE00AAE00830F0D /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D0D847B1DE00AAE00830F0D /* MainViewController.swift */; };
 		7D68491E1DD5594B00267B8D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D68491D1DD5594B00267B8D /* main.m */; };
 		7D6849211DD5594B00267B8D /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D6849201DD5594B00267B8D /* AppDelegate.m */; };
-		7D6849241DD5594B00267B8D /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D6849231DD5594B00267B8D /* ViewController.m */; };
 		7D6849271DD5594B00267B8D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7D6849251DD5594B00267B8D /* Main.storyboard */; };
 		7D68492A1DD5594B00267B8D /* teleport.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 7D6849281DD5594B00267B8D /* teleport.xcdatamodeld */; };
 		7D68492C1DD5594B00267B8D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7D68492B1DD5594B00267B8D /* Assets.xcassets */; };
@@ -58,8 +57,6 @@
 		7D68491D1DD5594B00267B8D /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		7D68491F1DD5594B00267B8D /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		7D6849201DD5594B00267B8D /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		7D6849221DD5594B00267B8D /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		7D6849231DD5594B00267B8D /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		7D6849261DD5594B00267B8D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		7D6849291DD5594B00267B8D /* teleport.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = teleport.xcdatamodel; sourceTree = "<group>"; };
 		7D68492B1DD5594B00267B8D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -190,8 +187,6 @@
 				7D0D847B1DE00AAE00830F0D /* MainViewController.swift */,
 				7D88303C1DE1E33900DF87AB /* ServerComms.swift */,
 				7D88303E1DE22B1800DF87AB /* User.swift */,
-				7D6849221DD5594B00267B8D /* ViewController.h */,
-				7D6849231DD5594B00267B8D /* ViewController.m */,
 				7D6849251DD5594B00267B8D /* Main.storyboard */,
 				7D68492B1DD5594B00267B8D /* Assets.xcassets */,
 				7D68492D1DD5594B00267B8D /* LaunchScreen.storyboard */,
@@ -373,7 +368,6 @@
 				7D68492A1DD5594B00267B8D /* teleport.xcdatamodeld in Sources */,
 				7D0D847C1DE00AAE00830F0D /* MainViewController.swift in Sources */,
 				7D68493C1DD55EF500267B8D /* PublishExample.m in Sources */,
-				7D6849241DD5594B00267B8D /* ViewController.m in Sources */,
 				7D68495A1DD5613100267B8D /* ALToastView.m in Sources */,
 				7D88303B1DE11E0E00DF87AB /* MainMenuTableViewController.m in Sources */,
 				7D88303F1DE22B1800DF87AB /* User.swift in Sources */,

@@ -10,12 +10,14 @@ import Foundation
 import MapKit
 
 class User: NSObject, MKAnnotation {
+    let title: String?  // required for popup on map when touched
     let uuid: String
     let coordinate: CLLocationCoordinate2D
 
     init(_ uuid: String, _ coordinate: CLLocationCoordinate2D) {
         self.uuid = uuid
-        self.coordinate = coordinate        
+        self.coordinate = coordinate
+        self.title = uuid  // this is what shows up when the annotation is touched (unless you've assigned an annotation view)
         super.init()
     }
 

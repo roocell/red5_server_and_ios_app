@@ -8,6 +8,7 @@
 
 #import "AppDelegate.h"
 #import "SSKeychain.h"
+#import "teleport-Swift.h"  // include project-Swift.h to get switch function call
 
 @interface AppDelegate ()
 
@@ -15,46 +16,23 @@
 
 @implementation AppDelegate
 
-
-// TODO: move to ServerComms
 -(void) getServer
 {
-    // get streamimg server IP from our server
-    // we could probably do a DNS query - but it's probably better that the app has one location to get all information and
-    // gets the streaming IP separately because eventually each phone could be streaming to a different server instance.    
-
+    // call swift function that has a completion handler from Obj-c
+    [[ServerComms  new] getServer:^(NSDictionary* json) {
+        _stream_server_ip=[json objectForKey:@"stream_server_ip"];
+        _stream_server_port=[json objectForKey:@"stream_server_port"];
+        
+        TGLog(@"stream server: %@ %@", _stream_server_ip, _stream_server_port);
+        
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            // Update the UI on the main thread.
+            
+        });
+    }];
     
-    NSString *url = [NSString stringWithFormat:@"%@%@",TELEPORT_REST_SERVER, @"server.php"];
-    TGLog(@"%@", url);
-    NSURLSession *session = [NSURLSession sharedSession];
-    [[session dataTaskWithURL:[NSURL URLWithString:url]
-            completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-                // handle response
-                if (error) {
-                    TGLog(@"FAILED");
-                } else {
-                    NSError* jsonerror;
-                    NSDictionary* json = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&jsonerror];
-                    if (jsonerror != nil) {
-                        NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;
-                        TGLog(@"response status code: %ld", (long)[httpResponse statusCode]);
-                        TGLog(@"%@", jsonerror);
-                        return;
-                    }
-
-                    _stream_server_ip=[json objectForKey:@"stream_server_ip"];
-                    _stream_server_port=[json objectForKey:@"stream_server_port"];
-                    
-                    TGLog(@"stream server: %@ %@", _stream_server_ip, _stream_server_port);
-                    
-                    dispatch_sync(dispatch_get_main_queue(), ^{
-                        // Update the UI on the main thread.
-                        
-                    });
-                }
-               }] resume];
-
 }
+
 
 // using UUID to create a unique identifier for the device which I can use in the stream name when publishing
 // in the future this could probably be a username or facebook hashed userid thing
@@ -80,36 +58,13 @@
     }
 }
 
-// TODO: move to ServerComms
 -(void) registerUser
 {
-
-    NSString *userUrl = [NSString stringWithFormat:REGISTER_USER_URL, _uuid, _apns_token];
+    // call swift function that has a completion handler from Obj-c
+    [[ServerComms  new] registerUser:_apns_token completion:^(NSDictionary* json) {
+        TGLog(@"%@", [json objectForKey:@"reason"]);
+    }];
     
-    NSURLSession *session = [NSURLSession sharedSession];
-    [[session dataTaskWithURL:[NSURL URLWithString:userUrl]
-            completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-                // handle response
-                if (error) {
-                    TGLog(@"FAILED");
-                    return;
-                } else {
-                    // check the status
-                    NSError *jsonerror = nil;
-                    NSDictionary *parsedObject = [NSJSONSerialization JSONObjectWithData:data options:0 error:&jsonerror];
-                    
-                    if (jsonerror != nil) {
-                        TGLog(@"%@", jsonerror);
-                        return;
-                    }
-                    TGLog(@"%@", parsedObject);
-                    NSString *status = [parsedObject valueForKey:@"status"];
-                    NSString *reason = [parsedObject valueForKey:@"reason"];
-                    TGLog(@"%@ status %@ reason %@", userUrl, status, reason);
-
-                }
-            }] resume];
-
 }
 
 -(bool) checkUUID
@@ -156,7 +111,7 @@
     // Override point for customization after application launch.
     // Checking if application was launched by tapping icon, or push notification
     if (!launchOptions[UIApplicationLaunchOptionsRemoteNotificationKey]) {
-        TGLog(@"processing icon tap or notification tap");
+        //TGLog(@"processing icon tap or notification tap");
         NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
         NSString *documentsDirectory = [paths objectAtIndex:0];
         NSString *filePath = [documentsDirectory stringByAppendingPathComponent:@"userInfo.plist"];
@@ -169,7 +124,7 @@
             [self showInAppAlert:userInfo];
         }
     } else {
-        TGLog(@"processing swiped notification");
+        //TGLog(@"processing swiped notification");
         NSDictionary *userInfo = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
         if (userInfo) {
             [self showInAppAlert:userInfo];
@@ -187,8 +142,8 @@
                           ntohl(tokenBytes[3]), ntohl(tokenBytes[4]), ntohl(tokenBytes[5]),
                           ntohl(tokenBytes[6]), ntohl(tokenBytes[7])];
     
-    TGLog(@"APNS token is: %@", deviceToken);
-    TGLog(@"APNS hextoken is: %@", hexToken);
+    //TGLog(@"APNS token is: %@", deviceToken);
+    //TGLog(@"APNS hextoken is: %@", hexToken);
     
     _apns_token=[NSString stringWithString:hexToken];
     [self registerUser];
@@ -210,9 +165,6 @@
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(nonnull NSDictionary *)userInfo fetchCompletionHandler:(nonnull void (^)(UIBackgroundFetchResult))completionHandler
 {
-    
-    TGLog(@"APNS triggered: %@", userInfo);
-    
     if(application.applicationState == UIApplicationStateInactive) {
         
         NSLog(@"Inactive");

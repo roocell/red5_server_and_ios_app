@@ -12,7 +12,7 @@ import UIKit
 import MapKit
 import CoreLocation
 
-class MainViewController: UIViewController, CLLocationManagerDelegate {
+class MainViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate {
  
     @IBOutlet weak var mapView: MKMapView!
     
@@ -44,11 +44,11 @@ class MainViewController: UIViewController, CLLocationManagerDelegate {
         locationManager.distanceFilter = 300
         locationManager.requestAlwaysAuthorization()
 
-
+        mapView.delegate=self;
         mapView.showsUserLocation = true
         
         ServerComms().getUsers() { (results: Array) in
-            print("\(#file):\(#line) \(results)")
+            //print("\(#file):\(#line) \(results)")
             self.users.removeAll()
             for u  in results {
                 let uu = u as! [String:AnyObject]  // need to make it a swift dictionary in order to use the subscript below
@@ -58,9 +58,13 @@ class MainViewController: UIViewController, CLLocationManagerDelegate {
                 self.users.append(user)
             }
             
-            // trigger refresh of map
-            self.mapView.removeAnnotations(self.mapView.annotations)
-            self.mapView.addAnnotations(self.users)
+            // trigger refresh of map (must be done a main thread (ui thread))
+            // http://stackoverflow.com/questions/37801370/how-do-i-dispatch-sync-dispatch-async-dispatch-after-etc-in-swift-3
+            DispatchQueue.main.async {
+                self.mapView.removeAnnotations(self.mapView.annotations)
+                self.mapView.addAnnotations(self.users)
+                //self.mapView.showAnnotations(self.mapView.annotations, animated: true)
+            }
         }
         
     }
@@ -124,96 +128,50 @@ class MainViewController: UIViewController, CLLocationManagerDelegate {
     
     @IBAction func changeMapType(_ sender: AnyObject) {
     }
+    
+  
+    func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl)
+    {
+        print("\(type(of: self)):\(#function):\(#line)");
+    }
 
+    
+    
     let regionRadius: CLLocationDistance = 1000
     func centerMapOnLocation(_ location: CLLocation) {
         let coordinateRegion = MKCoordinateRegionMakeWithDistance(location.coordinate, regionRadius * 2.0, regionRadius * 2.0)
         mapView.setRegion(coordinateRegion, animated: true)
     }
 
-    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         if annotation is MKUserLocation {
             
         } else {
+            //print("\(#file):\(#function)\(#line)");
             // handle other annotations
-            if let annotation = annotation as? User {
-                let identifier = "pin"
-                var view: MKPinAnnotationView
-                if let dequeuedView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
-                    as? MKPinAnnotationView {
-                    dequeuedView.annotation = annotation
-                    view = dequeuedView
+            let identifier = "User"
+            
+            if annotation.isKind(of:User.self) {
+                if let annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) {
+                    annotationView.annotation = annotation
+                    return annotationView
                 } else {
-                    view = MKPinAnnotationView(annotation: annotation, reuseIdentifier: identifier)
-                    view.canShowCallout = true
-                    view.calloutOffset = CGPoint(x: -5, y: 5)
-                    view.rightCalloutAccessoryView = UIButton(type: .detailDisclosure) as UIView
+                    let annotationView = MKPinAnnotationView(annotation:annotation, reuseIdentifier:identifier)
+                    annotationView.isEnabled = true
+                    annotationView.canShowCallout = true
+                    
+                    let btn = UIButton(type: .detailDisclosure)
+                    annotationView.rightCalloutAccessoryView = btn
+                    return annotationView
                 }
-                return view
             }
-            return nil
         }
+
         return nil
     }
 
     
     
-
-    // TODO: move to ServerComms
-    //https://grokswift.com/updating-nsurlsession-to-swift-3-0/
-    //https://www.raywenderlich.com/120442/swift-json-tutorial  - json parsing with Gloss
-    //https://developer.apple.com/swift/blog/?id=37
-    let defaultSession = URLSession(configuration: URLSessionConfiguration.default)
-    var dataTask: URLSessionDataTask?
-    func updateUserLocation(_ location: CLLocation)
-    {
-        let appdel = UIApplication.shared.delegate as! AppDelegate
-        if (appdel.uuid==nil)
-        {
-            return;
-        }
-        
-        if dataTask != nil {
-            dataTask?.cancel()
-        }
-        UIApplication.shared.isNetworkActivityIndicatorVisible = true
-        let urlStr: String = "http://roocell.homeip.net:11111/user.php?cmd=update&uuid=\(appdel.uuid!)&lat=\(location.coordinate.latitude)&lon=\(location.coordinate.longitude)"
-        print(urlStr)
-        guard let url = URL(string: urlStr) else {
-            print("Error: cannot creat URL")
-            return
-        }
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        
-        URLSession.shared.dataTask(with: request) {data, response, err in
-            print("Entered user update completionHandler")
-            
-            DispatchQueue.main.async() {
-                UIApplication.shared.isNetworkActivityIndicatorVisible = false
-            }
-            if let error = err as? NSError {
-                print(error.localizedDescription)
-            } else if let httpResponse = response as? HTTPURLResponse {
-                if httpResponse.statusCode == 200 {
-                    do {
-                        let json = try JSONSerialization.jsonObject(with: data!, options: .allowFragments) as! [String: Any]
-                        print(json)
-                        let status = json["status"] as! String
-                        let reason = json["reason"] as! String
-                        print("status \(status) reason \(reason)")
-                    } catch let error as NSError {
-                            print(error)
-                    }
-                }
-            }
-
-        }.resume()
-
- 
-    }
-
     
     // Location Manager Delegate stuff
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
@@ -225,9 +183,11 @@ class MainViewController: UIViewController, CLLocationManagerDelegate {
     {
         let locationArray = locations as NSArray
         let locationObj = locationArray.lastObject as! CLLocation
-        print(locationObj)
+        //print(locationObj)
     
-        self.updateUserLocation(locationObj);
+        ServerComms().updateUserLocation(locationObj) { (results: [String: Any]) in
+            
+        }
         
         if (!initialMapCentered)
         {
