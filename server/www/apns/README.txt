@@ -19,11 +19,13 @@ http://www.raywenderlich.com/32960/apple-push-notification-services-in-ios-6-tut
 4. upload CSR (from rayw's URL above)
 5. download the .cer file (save as teleport.ces)
 
+# install the cer file into the keychain on the mac.
+# expand the certificate installed using the keychain app
+# select both items and right click - choose export 2 items.
+# save a p12 file.
 
 #now we create the PEM file
-openssl x509 -in teleport.cer -inform der -out teleport.pem (or you can use the keychain app)
 openssl pkcs12 -nocerts -out teleport.pem -in teleport.p12
-cat PushCert_PS.pem PushKey_PS.pem > ck_PS.pem
 
 
 # to test

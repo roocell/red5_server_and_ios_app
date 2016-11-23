@@ -106,7 +106,7 @@ class ServerComms: NSObject {
         #if DEBUG
             let debug = 1
         #else
-            let debug = 0
+            let debug = 0  // aka testflight
         #endif
         let url_ext: String = "user.php?cmd=add&uuid=\(verifyUuidAvailable()!)&apns_token=\(apns_token)&debug=\(debug)"
         let urlStr: String = "\(baseurl)\(url_ext)"
