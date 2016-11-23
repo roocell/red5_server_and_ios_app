@@ -20,16 +20,15 @@ http://www.raywenderlich.com/32960/apple-push-notification-services-in-ios-6-tut
 5. download the .cer file (save as teleport.ces)
 
 # install the cer file into the keychain on the mac.
-# expand the certificate installed using the keychain app
-# select both items and right click - choose export 2 items.
-# save a p12 file.
+# select the certificate right click and export as p12.  
 
 #now we create the PEM file
-openssl pkcs12 -nocerts -out teleport.pem -in teleport.p12
-
+openssl pkcs12 -in teleport.p12 -out teleport.pem -nodes -clcerts
+openssl pkcs12 -in teleport_production.p12 -out teleport_production.pem -nodes -clcerts
 
 # to test
 openssl s_client -connect gateway.push.apple.com:2195 -cert teleport.pem -key teleport.pem
+openssl s_client -connect gateway.push.apple.com:2195 -cert teleport_production.pem -key teleport_production.pem
 
 
 # copy the teleport.pem file into the APNS  directory on the web server
