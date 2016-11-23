@@ -27,8 +27,11 @@ class ServerComms: NSObject {
         fflprint(urlStr)
         //print("\(type(of: self)):\(#line):\(urlStr)")
         UIApplication.shared.isNetworkActivityIndicatorVisible = true
+        //let allowedCharacterSet = (CharacterSet(charactersIn: "!*'();:@&=+$,/?%#[] ").inverted)
+        //let escapedString = urlStr.addingPercentEncoding(withAllowedCharacters: allowedCharacterSet)
+        //let escapedString = urlStr.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)
         guard let url = URL(string: urlStr) else {
-            print("Error: cannot creat URL")
+            fflprint("Error: cannot creat URL")
             return
         }
         
@@ -40,7 +43,7 @@ class ServerComms: NSObject {
                 UIApplication.shared.isNetworkActivityIndicatorVisible = false
             }
             if let error = err as? NSError {
-                print(error.localizedDescription)
+                fflprint(error.localizedDescription)
                 return
             } else if let httpResponse = response as? HTTPURLResponse {
                 if httpResponse.statusCode == 200 {
@@ -148,7 +151,7 @@ class ServerComms: NSObject {
     
     func contactUser(_ dest_uuid: String, message: String, completion: @escaping ([String: AnyObject]) -> ())
     {
-        let url_ext: String = "user.php?cmd=add&uuid=\(verifyUuidAvailable()!)&dest_uuid=\(dest_uuid)&message=\(message)"
+        let url_ext: String = "user.php?cmd=contact&uuid=\(verifyUuidAvailable()!)&dest_uuid=\(dest_uuid)&message=\(message.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!)"
         let urlStr: String = "\(baseurl)\(url_ext)"
         getJsonFromUrl(urlStr) { (json: [String: Any]) in
              completion(json as [String: AnyObject])
