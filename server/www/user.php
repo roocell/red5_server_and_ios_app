@@ -28,10 +28,11 @@ if(!isset($_REQUEST['cmd']) || $_REQUEST['cmd']=="")
 }
 
 // apns_token, location  may be optional (user may not allow push notifications)
-$apns_token=0; $lat=0; $lon=0;
+$apns_token=0; $lat=0; $lon=0; $debug=0;
 if(isset($_REQUEST['apns_token'])) $apns_token=$_REQUEST['apns_token'];
 if(isset($_REQUEST['lat'])) $lat=$_REQUEST['lat'];
 if(isset($_REQUEST['lon'])) $lon=$_REQUEST['lon'];
+if(isset($_REQUEST['debug'])) $debug=$_REQUEST['debug'];
 
 $uuid=$_REQUEST['uuid'];
 $cmd=$_REQUEST['cmd'];
@@ -52,12 +53,17 @@ switch ($cmd)
     if ($num_rows==0)
     {
         // insert new user
-        $sql = "INSERT INTO users (uuid, apns_token, lat, lon) VALUES ('$uuid', '$apns_token', '$lat', '$lon')";
+        $sql = "INSERT INTO users (uuid, apns_token, lat, lon, debug) VALUES ('$uuid', '$apns_token', '$lat', '$lon', '$debug')";
         $rc = $db->query($sql);
         if ($rc) echo json_encode(array("status"=>"success", "reason"=>"inserted","uuid"=>"$uuid"));
         else echo json_encode(array("status"=>"failed", "error"=>"failed to insert", "mysql_rc"=>$db->errorInfo()));
     } else {
-      echo json_encode(array("status"=>"success", "reason"=>"exists","uuid"=>"$uuid"));
+        // we might be updating the apns-token and debug flag (if testflight install is downloaded over an xcode install)
+        // it exists - just overwrite the fields
+        $sql = "UPDATE users SET apns_token='$apns_token',debug='$debug' WHERE uuid='$uuid'";
+        $rc = $db->query($sql);
+        if ($rc) echo json_encode(array("status"=>"success", "reason"=>"exists","uuid"=>"$uuid"));
+        else echo json_encode(array("status"=>"failed", "error"=>"failed to update", "mysql_rc"=>$db->errorInfo()));
     }
     break;
   case "update":

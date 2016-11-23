@@ -27,9 +27,6 @@ function sendpush ($dest_uuid, $message)
 {
 	global $dsn, $usr, $pwd;
 
-	$use_apns_sandbox=1;
-
-
 	try {
 	    $db = new PDO($dsn, $usr, $pwd);
 	} catch (PDOException $e) {
@@ -43,6 +40,7 @@ function sendpush ($dest_uuid, $message)
 	if ($apns_token)
 	{
 	  $token_status="found";
+		$use_apns_sandbox=$row['debug'];
 	} else {
 		$rc=array('status' => 'failed', 'token_status' => 'not found');
 		return $rc;
@@ -69,7 +67,7 @@ function sendpush ($dest_uuid, $message)
 	} else {
 		$passphrase = 'admin123'; // Put your private key's passphrase here (used when exporting the p12 file)
 		$ctx = stream_context_create();
-		stream_context_set_option($ctx, 'ssl', 'local_cert', $_SERVER['DOCUMENT_ROOT']."/apns/teleport.pem");
+		stream_context_set_option($ctx, 'ssl', 'local_cert', $_SERVER['DOCUMENT_ROOT']."/apns/teleport_production.pem");
 		stream_context_set_option($ctx, 'ssl', 'passphrase', $passphrase);
 	        $fp = stream_socket_client(
 					'ssl://gateway.push.apple.com:2195', $err,
