@@ -103,7 +103,12 @@ class ServerComms: NSObject {
     
     func registerUser(_ apns_token: String, completion: @escaping ([String: AnyObject]) -> ())
     {
-        let url_ext: String = "user.php?cmd=add&uuid=\(verifyUuidAvailable()!)&apns_token=\(apns_token)"
+        #if DEBUG
+            let debug = 1
+        #else
+            let debug = 0
+        #endif
+        let url_ext: String = "user.php?cmd=add&uuid=\(verifyUuidAvailable()!)&apns_token=\(apns_token)&debug=\(debug)"
         let urlStr: String = "\(baseurl)\(url_ext)"
         getJsonFromUrl(urlStr) { (json: [String: Any]) in
             //print("\(type(of: self)):\(#line)")
