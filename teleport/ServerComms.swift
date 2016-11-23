@@ -24,7 +24,8 @@ class ServerComms: NSObject {
     
     func getJsonFromUrl(_ urlStr: String, completion: @escaping ([String: Any]) -> ())
     {
-        print("\(type(of: self)):\(#line):\(urlStr)")
+        fflprint(urlStr)
+        //print("\(type(of: self)):\(#line):\(urlStr)")
         UIApplication.shared.isNetworkActivityIndicatorVisible = true
         guard let url = URL(string: urlStr) else {
             print("Error: cannot creat URL")
@@ -45,13 +46,16 @@ class ServerComms: NSObject {
                 if httpResponse.statusCode == 200 {
                     do {
                         let json = try JSONSerialization.jsonObject(with: data!, options: .allowFragments) as! [String: Any]
-                        let status = json["status"] as! String // ! = definitely there and definitely a String
-                        //let reason = json["reason"] as? String // ? = might be there and/or might be a String
-                        
-                        // assuming status is always returned regardless of url
-                        if (status != "success")
+                        if (json["status"] != nil)
                         {
-                            print("\(#file):\(#function)\(#line) ERROR status \(status)");
+                            let status = json["status"] as! String // ! = definitely there and definitely a String
+                            //let reason = json["reason"] as? String // ? = might be there and/or might be a String
+                            
+                            // assuming status is always returned regardless of url
+                            if (status != "success")
+                            {
+                                print("\(#file):\(#function)\(#line) ERROR status \(status)");
+                            }
                         }
                         //print("\(type(of: self)):\(#line)")
                         completion(json)
@@ -116,6 +120,33 @@ class ServerComms: NSObject {
         let urlStr: String = "\(baseurl)\(url_ext)"
         getJsonFromUrl(urlStr) { (json: [String: Any]) in
             completion(json as [String: AnyObject])
+        }
+    }
+
+    func getStreams(_ completion: @escaping (Array<Any>) -> ())
+    {
+        let url_ext: String = "red5list.php"
+        let urlStr: String = "\(baseurl)\(url_ext)"
+        getJsonFromUrl(urlStr) { (json: [String: Any]) in
+            completion(json["data"] as! Array)
+        }
+    }
+
+    func getUuids(_ completion: @escaping (Array<Any>) -> ())
+    {
+        let url_ext: String = "user.php?cmd=getuuids&uuid=\(verifyUuidAvailable()!)"
+        let urlStr: String = "\(baseurl)\(url_ext)"
+        getJsonFromUrl(urlStr) { (json: [String: Any]) in
+            completion(json["data"] as! Array)
+        }
+    }
+    
+    func contactUser(_ dest_uuid: String, message: String, completion: @escaping ([String: AnyObject]) -> ())
+    {
+        let url_ext: String = "user.php?cmd=add&uuid=\(verifyUuidAvailable()!)&dest_uuid=\(dest_uuid)&message=\(message)"
+        let urlStr: String = "\(baseurl)\(url_ext)"
+        getJsonFromUrl(urlStr) { (json: [String: Any]) in
+             completion(json as [String: AnyObject])
         }
     }
 

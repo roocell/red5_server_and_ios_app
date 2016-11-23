@@ -10,6 +10,7 @@
 #import "SubscribeExample.h"
 #import "AppDelegate.h"
 #import "ALToastView.h"
+#import "teleport-Swift.h"  // include project-Swift.h to get switch function call
 
 @interface MenuTableViewController ()
 
@@ -18,101 +19,13 @@
 @implementation MenuTableViewController
 
 
-// TODO: move to ServerComms
-// can retrieve the streams or the users
--(void) getItems:(NSString*)url
+-(void) contactUser:(NSString*)dest_uuid withMessage:(NSString*) message
 {
-    // get streams from server
-    // https://www.raywenderlich.com/67081/cookbook-using-nsurlsession
-    // more modern way than dataWithContentsOfURL
-
-    TGLog(@"%@", url);
-    NSURL *nsurl = [NSURL URLWithString:url];
-    NSURLSessionDataTask *downloadTask = [[NSURLSession sharedSession]
-          dataTaskWithURL:nsurl completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-              if (error) {
-                  TGLog(@"FAILED %@", error);
-                  return;
-              }
-              
-              NSError* jsonerror;
-              NSDictionary* json = [NSJSONSerialization JSONObjectWithData:data
-                                                                   options:NSJSONReadingAllowFragments
-                                                                     error:&jsonerror];
-              
-              if (jsonerror != nil) {
-                  NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;
-                  TGLog(@"response status code: %ld", (long)[httpResponse statusCode]);
-                  TGLog(@"%@", jsonerror);
-                  return;
-              }
-              
-              if (![[json objectForKey:@"status"] isEqualToString:@"success"])
-              {
-                  TGLog(@"ERR: failed for %@ reason %@", _mainMenuRow, [json objectForKey:@"status"]);
-                  return;
-              }
-
-              
-              _items = [NSMutableArray arrayWithArray:[json objectForKey:@"data"]];
-              
-              TGLog(@"%@ items: %@", _mainMenuRow, _items);
-              
-              dispatch_sync(dispatch_get_main_queue(), ^{
-                  // Update the UI on the main thread.
-                  [self.tableView reloadData];
-              });
-              
-          }];
-    [downloadTask resume];
-
-}
-
-// TODO: move to ServerComms
--(void) contactUser:(NSString*)uuid withMessage:(NSString*) message
-{
-    APPDEL;
-    NSString *url = [NSString stringWithFormat:@"http://roocell.homeip.net:11111/user.php?cmd=contact&uuid=%@&dest_uuid=%@&message=%@", appdel.uuid, uuid, message];
-    TGLog(@"%@", url);
-    NSString * encodedUrl = [url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLFragmentAllowedCharacterSet]];
-    //NSString* encodedUrl = [url stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-    NSURL *nsurl = [NSURL URLWithString:encodedUrl];
-    NSURLSessionDataTask *downloadTask = [[NSURLSession sharedSession]
-      dataTaskWithURL:nsurl completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-          if (error) {
-              TGLog(@"FAILED %@", error);
-              return;
-          }
-          
-          NSError* jsonerror;
-          NSDictionary* json = [NSJSONSerialization JSONObjectWithData:data
-                                                               options:NSJSONReadingAllowFragments
-                                                                 error:&jsonerror];
-          
-          if (jsonerror != nil) {
-              NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;
-              TGLog(@"response status code: %ld", (long)[httpResponse statusCode]);
-              TGLog(@"%@", jsonerror);
-              return;
-          }
-          
-          if (![[json objectForKey:@"status"] isEqualToString:@"success"])
-          {
-              TGLog(@"ERR: failed for %@ reason %@", _mainMenuRow, [json objectForKey:@"status"]);
-              return;
-          }
-          
-          TGLog(@"contacted %@:%@", uuid, message);
-          
-          [ALToastView toastInView:[[[UIApplication sharedApplication] keyWindow] rootViewController].view withText:[NSString stringWithFormat:@"contacted %@:%@", uuid, message]];
-          
-          dispatch_sync(dispatch_get_main_queue(), ^{
-              // Update the UI on the main thread.
-              [self.tableView reloadData];
-          });
-          
-      }];
-    [downloadTask resume];
+    [[ServerComms  new] contactUser:dest_uuid message: message completion:^(NSDictionary* json) {
+        TGLog(@"contacted %@:%@", dest_uuid, message);
+ 
+        [ALToastView toastInView:[[[UIApplication sharedApplication] keyWindow] rootViewController].view withText:[NSString stringWithFormat:@"contacted %@:%@", dest_uuid, message]];
+    }];
     
 }
 
@@ -128,12 +41,31 @@
     
     if ([_mainMenuRow isEqualToString:@"Streams"])
     {
-        NSString *url = @"http://roocell.homeip.net:11111/red5list.php";
-        [self getItems:url];
+        [[ServerComms  new] getStreams:^(NSArray* streams) {
+            _items = [NSMutableArray arrayWithArray:streams];
+            
+            TGLog(@"%@ items: %@", _mainMenuRow, _items);
+            
+            dispatch_sync(dispatch_get_main_queue(), ^{
+                // Update the UI on the main thread.
+                [self.tableView reloadData];
+       
+            });
+        }];
+
+        
     } else if ([_mainMenuRow isEqualToString:@"Users"]) {
-        APPDEL;
-        NSString *url = [NSString stringWithFormat:@"http://roocell.homeip.net:11111/user.php?cmd=getuuids&uuid=%@", appdel.uuid];
-        [self getItems:url];
+        [[ServerComms  new] getUuids:^(NSArray* uuids) {
+            _items = [NSMutableArray arrayWithArray:uuids];
+            
+            TGLog(@"%@ items: %@", _mainMenuRow, _items);
+            
+            dispatch_sync(dispatch_get_main_queue(), ^{
+                // Update the UI on the main thread.
+                [self.tableView reloadData];
+                
+            });
+        }];
     }
 
 }
@@ -187,9 +119,9 @@
 
     if ([_mainMenuRow isEqualToString:@"Users"])
     {
-        NSString* uuid=[_items objectAtIndex:[indexPath row]];
-        TGLog(@"Selected %@", uuid);
-        [self contactUser:uuid withMessage:@"Please take a video"];
+        NSString* dest_uuid=[_items objectAtIndex:[indexPath row]];
+        TGLog(@"Selected %@", dest_uuid);
+        [self contactUser:dest_uuid withMessage:@"Please take a video"];
     } else {
         // a segue in IB takes care of this case.
     }
