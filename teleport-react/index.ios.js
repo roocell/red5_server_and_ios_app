@@ -41,7 +41,7 @@ export class teleport extends Component {
       tweenHandlerOn: false,
       tweenDuration: 350,
       tweenEasing: 'easeOutQuad',
-      disabled: true,
+      disabled: false,  // false = can drag it closed
       tweenHandlerPreset: null,
       acceptDoubleTap: false,
       acceptTap: false,

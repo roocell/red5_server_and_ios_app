@@ -16,3 +16,6 @@
 // npm i --save react-native-drawer
 // demo code (which I copied) requires
 // npm i --save react-native-slider
+
+
+// https://www.npmjs.com/search?q=react-native
