@@ -1,0 +1,23 @@
+source 'https://github.com/CocoaPods/Specs.git'
+
+platform :ios, '8.0'
+use_frameworks!
+
+project 'teleport.xcodeproj'
+
+target 'teleport' do
+  pod 'React', path: '../node_modules/react-native', :subspecs => [
+    'Core',
+    'RCTActionSheet',
+    'RCTGeolocation',
+    'RCTImage',
+    'RCTLinkingIOS',
+    'RCTNetwork',
+    'RCTSettings',
+    'RCTText',
+    'RCTVibration',
+    'RCTWebSocket'
+  ]
+
+  pod 'GoogleMaps'  # <~~ remove this line if you do not want to support GoogleMaps on iOS
+end

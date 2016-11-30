@@ -20,7 +20,7 @@ const drawerStyles = {
 }
 
 import Drawer from 'react-native-drawer';
-import MyMainView from './MyMainView';
+import MainView from './MainView';
 import MyControlPanel from './ControlPanel';
 
 import tweens from './tweens';
@@ -106,7 +106,7 @@ export class teleport extends Component {
         changeVal={this.state.changeVal}
         side={this.state.rightSide ? 'right' : 'left'}
         >
-        <MyMainView
+        <MainView
           drawerType={this.state.drawerType}
           setParentState={this.setStateFrag.bind(this)}
           openDrawer={this.openDrawer.bind(this)}
