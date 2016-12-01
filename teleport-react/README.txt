@@ -11,11 +11,22 @@
 
 
 
+// after a clean checkout you need to use node to install some modules
+npm install --save react-native
+npm install -g react-native-cli
+npm install --save-dev flow-bin
+npm i --save react-native-drawer
+npm i --save react-native-maps
+npm install react-native-vector-icons --save
+
+// then build and run
+react-native link
+react-native run-ios
+
+
 // DRAWER
 // https://github.com/root-two/react-native-drawer
-// npm i --save react-native-drawer
-// demo code (which I copied) requires
-// npm i --save react-native-slider
+
 
 
 // https://www.npmjs.com/search?q=react-native

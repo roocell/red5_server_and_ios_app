@@ -16,12 +16,13 @@ import styles from './styles';
 import Button from './Button';
 
 import MapView from 'react-native-maps';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 
 const mapstyles = StyleSheet.create({
   container: {
     position: 'absolute',
-    top: 100,
+    top: 0,
     left: 0,
     right: 0,
     bottom: 0,
@@ -36,7 +37,20 @@ const mapstyles = StyleSheet.create({
     bottom: 0,
   },
 });
-
+const buttonstyles = StyleSheet.create({
+  container: {
+    top: 25,
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    backgroundColor: 'transparent',
+    padding: 10,
+  },
+  menu: {
+  },
+  video: {
+  }
+});
 
 export default class MainView extends Component {
   setParentState(args){
@@ -50,10 +64,6 @@ export default class MainView extends Component {
    <View style={styles.container}
      >
 
-     <Button
-       onPress={this.props.openDrawer}
-       text="Open Drawer"
-       />
 
          <View style={mapstyles.container}
            >
@@ -67,6 +77,18 @@ export default class MainView extends Component {
              }}
            />
          </View>
+
+          <View style={buttonstyles.container}>
+             {/* put icons after the maps in order for them to appear above
+              absolute position */}
+             <Icon name="bars" size={30} onPress={this.props.openDrawer} style={buttonstyles.menu}>
+             </Icon>
+             <Icon name="video-camera" color={'red'} size={30} onPress={this.props.openDrawer} style={buttonstyles.video}>
+             </Icon>
+         </View>
+
+
+
 
   </View>
 
