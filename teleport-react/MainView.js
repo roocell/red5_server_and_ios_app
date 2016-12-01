@@ -13,7 +13,6 @@ import {
 
 
 import styles from './styles';
-import Button from './Button';
 
 import MapView from 'react-native-maps';
 import Icon from 'react-native-vector-icons/FontAwesome';

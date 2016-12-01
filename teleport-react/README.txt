@@ -30,3 +30,8 @@ react-native run-ios
 
 
 // https://www.npmjs.com/search?q=react-native
+
+// Redux (an implementation of Facebook Flux)
+https://facebook.github.io/flux/
+https://egghead.io/courses/getting-started-with-redux
+https://medium.com/@dan_abramov/the-evolution-of-flux-frameworks-6c16ad26bb31#.t3qp7i6t3
