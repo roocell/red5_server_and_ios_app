@@ -16,6 +16,7 @@ const drawerStyles = {
     shadowColor: "#000000",
     shadowOpacity: 0.8,
     shadowRadius: 0,
+    backgroundColor: '#F6F6F6',
   }
 }
 
