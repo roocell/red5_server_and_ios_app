@@ -20,7 +20,6 @@ var api = require('./src/fetchapi.js');
 var moment = require('moment');
 
 
-//https://www.youtube.com/watch?v=xm_rSbqSN5o
 var UserList = React.createClass({
 
 
@@ -33,7 +32,7 @@ var UserList = React.createClass({
       return {
         loaded: false,
         user_list: ['back'],
-        dataSource: ds.cloneWithRows(['back']),
+        dataSource: ds,
       };
 
     },
@@ -92,7 +91,7 @@ var UserList = React.createClass({
     _renderRow: function(rowData: string, sectionID: number, rowID: number, highlightRow: (sectionID: number, rowID: number) => void) {
         return (
           <TouchableHighlight onPress={() => {
-              //this._pressRow(rowID);
+              this._pressRow(rowID);
               highlightRow(sectionID, rowID);
             }}>
             <View>
@@ -117,63 +116,43 @@ var UserList = React.createClass({
       );
     },
 
-    userPressed: function() {
-      console.log("user pressed");
+    _pressRow: function(rowID: number) {
+      console.log("user pressed " + rowID);
 
+      if (rowID == 0) this.props.navigator.pop();
     },
 
-    updateUserListUI: function(users){
-
-        if(users.length == TOTAL_NUM_USERS){
-
-            var ds = this.state.dataSource.cloneWithRows(users);
-            this.setState({
-              'user_list': ds,
-              'loaded': true
-            });
-
-        }
-
+    updateUserListTable: function(){
+      var ds = this.state.dataSource.cloneWithRows(this.state.user_list);
+      this.setState({
+        dataSource: ds,
+        'loaded': true
+      });
     },
 
-    updateUserListDB: function(users){
-
-        if(users.length == TOTAL_NUM_USERS){
-            AsyncStorage.setItem('user_list', JSON.stringify(users));
-        }
-
+    updateUserListDB: function()
+    {
+      AsyncStorage.setItem('user_list', JSON.stringify(this.state.user_list));
     },
 
     getUserList: function() {
-
-        var USER_LIST_URL = 'http://roocell.homeip.net:11111/users.php?cmd=getusers&uuid=abc123';
-        var users = [];
-
-        //AsyncStorage.setItem('time', JSON.stringify({'last_cache': moment()}));
-/*
-        api(USER_LIST_URL).then(
-          (top_stories) => {
-
-                for(var x = 0; x <= 10; x++){
-
-                    var story_url = "https://hacker-news.firebaseio.com/v0/item/" + top_stories[x] + ".json";
-
-                    api(story_url).then(
-                        (story) => {
-
-                            users.push(story);
-                            this.updateUserListUI(users);
-                            this.updateUserListDB(users);
-
-                        }
-                    );
-
-                }
-            }
-        );
-*/
-
-    },
+      var USER_LIST_URL = 'http://roocell.homeip.net:11111/user.php?cmd=getusers&uuid=abc123';
+      return fetch(USER_LIST_URL)
+      .then((response) => response.json())
+      .then((responseJson) => {
+        var len = responseJson.data.length;
+        //console.log(responseJson.data);
+        for (var i=0; i<len; ++i)
+        {
+          console.log(responseJson.data[i].uuid);
+          this.state.user_list.push(responseJson.data[i].uuid);
+        }
+        this.updateUserListTable();
+      })
+      .catch((error) => {
+        console.log(error);  // NOTE: console.error - kills the app (it's an assert)
+      });
+   }
 
 });
 
