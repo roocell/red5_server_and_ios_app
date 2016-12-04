@@ -15,8 +15,6 @@ import {
 var Button = require('react-native-button');
 var GiftedSpinner = require('react-native-gifted-spinner');
 
-var api = require('./src/fetchapi.js');
-
 var moment = require('moment');
 
 
@@ -136,16 +134,28 @@ var UserList = React.createClass({
     },
 
     getUserList: function() {
-      var USER_LIST_URL = 'http://roocell.homeip.net:11111/user.php?cmd=getusers&uuid=abc123';
-      return fetch(USER_LIST_URL)
+      var url = 'http://roocell.homeip.net:11111/user.php?cmd=getusers&uuid=abc123';
+      if (this.props.list=="streamlist") url = 'http://roocell.homeip.net:11111/red5list.php';
+      console.log(url);
+      return fetch(url)
       .then((response) => response.json())
       .then((responseJson) => {
         var len = responseJson.data.length;
         //console.log(responseJson.data);
         for (var i=0; i<len; ++i)
         {
-          console.log(responseJson.data[i].uuid);
-          this.state.user_list.push(responseJson.data[i].uuid);
+          if (this.props.list=="userlist")
+          {
+            console.log(responseJson.data[i].uuid);
+            this.state.user_list.push(responseJson.data[i].uuid);
+          } else if (this.props.list=="streamlist") {
+            console.log(responseJson.data[i]);
+            this.state.user_list.push(responseJson.data[i]);
+          }
+        }
+        if (len==0)
+        {
+          this.state.user_list.push("<empty>");
         }
         this.updateUserListTable();
       })

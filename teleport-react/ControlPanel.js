@@ -88,12 +88,12 @@ var ControlPanel = React.createClass({
         renderScrollComponent={props => <RecyclerViewBackedScrollView {...props} />}
         renderSeparator={this._renderSeparator}
       />);
-    } else if (route.name == "userlist") {
-      console.log("nav to userlist");
+    } else {
+      console.log("nav to " + route.name);
       return (<UserList
         navigator={navigator}
+        list={route.name}
       />);
-    } else if (route.name == "streamlist") {
     }
   },
 
