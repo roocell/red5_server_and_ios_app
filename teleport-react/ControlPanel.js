@@ -9,6 +9,10 @@ import {
   Navigator,
 } from 'react-native';
 
+import UserList from './UserList';
+//var UserList = require('./UserList');
+//var Streams = require('Streams.js');
+
 var styles = StyleSheet.create({
   container: {
     top:25,
@@ -38,16 +42,13 @@ var styles = StyleSheet.create({
 // https://www.npmjs.com/package/react-native-tableview
 
 const routes = [
-  {title: 'First Level Menu', index: 0},
-  {title: 'Second Level Menu', index: 1},
+  {name: "main", index: 0},
+  {name: "userlist", index: 1},
+  {name: "streamlist", index: 2},
 ];
 
 
 var ControlPanel = React.createClass({
-  statics: {
-    title: '<ListView>',
-    description: 'Performant, scrollable list of data.'
-  },
 
   getInitialState: function() {
     var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
@@ -62,25 +63,38 @@ var ControlPanel = React.createClass({
     this._pressData = {};
   },
 
+
   render() {
 
     return (
       <View style={styles.container}>
         <Navigator
           initialRoute={routes[0]}
-          initialRouteStack={routes}
-          renderScene={(route, navigator) =>
-            <ListView
-              style={styles.list}
-              dataSource={this.state.dataSource}
-              renderRow={this._renderRow}
-              renderScrollComponent={props => <RecyclerViewBackedScrollView {...props} />}
-              renderSeparator={this._renderSeparator}
-            />
-          }
+          // initialRouteStack={routes}
+          renderScene={ (route, navigator) => this._renderScene(route, navigator) }
         />
       </View>
     )
+  },
+
+  _renderScene(route, navigator) {
+    this.navigator=navigator; // need a reference here to be used in other function in this class
+    if (route.name == "main")
+    {
+      return (<ListView
+        style={styles.list}
+        dataSource={this.state.dataSource}
+        renderRow={this._renderRow}
+        renderScrollComponent={props => <RecyclerViewBackedScrollView {...props} />}
+        renderSeparator={this._renderSeparator}
+      />);
+    } else if (route.name == "userlist") {
+      console.log("nav to userlist");
+      return (<UserList
+        navigator={navigator}
+      />);
+    } else if (route.name == "streamlist") {
+    }
   },
 
 
@@ -108,11 +122,8 @@ var ControlPanel = React.createClass({
 
     // load in the next ListView
     console.log("touched " + rowID);
-    if (rowID === 0) {
-      navigator.push(routes[1]);
-    } else {
-      navigator.pop();
-    }
+    var ridx=+rowID+1; // make sure rowID is really a number :S
+    this.navigator.push(routes[ridx]);
 
     //this.setState({dataSource: this.state.dataSource.cloneWithRows(
     //  this._genRows(this._pressData)
