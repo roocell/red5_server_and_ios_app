@@ -24,6 +24,8 @@
 	<true/>
 	<key>NSAppTransportSecurity</key>
 	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
 		<key>NSExceptionDomains</key>
 		<dict>
 			<key>roocell.homeip.net</key>
@@ -65,6 +67,21 @@
 		<string>Octicons.ttf</string>
 		<string>SimpleLineIcons.ttf</string>
 		<string>Zocial.ttf</string>
+	</array>
+	<key>NSCameraUsageDescription</key>
+	<string>Red5 Pro uses your camera for live streaming</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Red5 Pro uses your microphone for live streaming</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Need your location</string>
+	<key>NSLocationWhenInUseUsageDescription - 2</key>
+	<string>Need your location</string>
+	<key>privacy - location usage description</key>
+	<string>Need your location</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>location</string>
+		<string>remote-notification</string>
 	</array>
 </dict>
 </plist>

@@ -4,6 +4,9 @@ import {
   Text,
   StyleSheet,
   Platform,
+  requireNativeComponent,
+  NativeModules,
+  Navigator,
 } from 'react-native';
 
 // https://github.com/airbnb/react-native-maps/blob/master/docs/installation.md
@@ -16,6 +19,7 @@ import styles from './styles';
 
 import MapView from 'react-native-maps';
 import Icon from 'react-native-vector-icons/FontAwesome';
+
 
 
 const mapstyles = StyleSheet.create({
@@ -51,51 +55,71 @@ const buttonstyles = StyleSheet.create({
   }
 });
 
+const { RTCObjBridgeView } = NativeModules;
+
+
 export default class MainView extends Component {
   setParentState(args){
     this.props.setParentState(args)
   }
 
+  openPublish(navigator) {
+    console.log("press publish");
+    RTCObjBridgeView.showPublish();
+    
+  }
+  _renderScene(route, navigator) {
+    if (route.component) {
+        return React.createElement(route.component, { ...this.props, ...route.passProps, navigator, route } );
+    }
+    return (
+      <View style={styles.container}
+        >
+
+
+            <View style={mapstyles.container}
+              >
+              <MapView
+                style={ mapstyles.map }
+                initialRegion={{
+                  latitude: 37.78825,
+                  longitude: -122.4324,
+                  latitudeDelta: 0.0922,
+                  longitudeDelta: 0.0421,
+                }}
+              />
+            </View>
+
+             <View style={buttonstyles.container}>
+                {/* put icons after the maps in order for them to appear above
+                 absolute position */}
+                <Icon name="bars" size={30} onPress={this.props.openDrawer} style={buttonstyles.menu}>
+                </Icon>
+                <Icon name="video-camera" color={'red'} size={30}
+                  onPress={() => {
+                    this.openPublish(navigator);
+                  }}
+                  style={buttonstyles.video}>
+                </Icon>
+            </View>
+     </View>
+
+    )
+  }
+
  render(){
  return (
 
-
-   <View style={styles.container}
-     >
-
-
-         <View style={mapstyles.container}
-           >
-           <MapView
-             style={ mapstyles.map }
-             initialRegion={{
-               latitude: 37.78825,
-               longitude: -122.4324,
-               latitudeDelta: 0.0922,
-               longitudeDelta: 0.0421,
-             }}
-           />
-         </View>
-
-          <View style={buttonstyles.container}>
-             {/* put icons after the maps in order for them to appear above
-              absolute position */}
-             <Icon name="bars" size={30} onPress={this.props.openDrawer} style={buttonstyles.menu}>
-             </Icon>
-             <Icon name="video-camera" color={'red'} size={30} onPress={this.props.openDrawer} style={buttonstyles.video}>
-             </Icon>
-         </View>
-
-
-
-
-  </View>
-
-
+   <Navigator
+    style = {styles.container}
+    initialRoute={{
+      title: "Root",
+      navigationBarHidden: true,
+      }}
+      renderScene={ (route, navigator) => this._renderScene(route, navigator) }
+      >
+      </Navigator>
    );
-
-
-
   }
 }
 
