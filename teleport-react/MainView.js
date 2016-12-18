@@ -60,16 +60,25 @@ const buttonstyles = StyleSheet.create({
 
 const { RTCObjBridgeView } = NativeModules;
 
+var getStreamServer = require('./ServerComms.js').getStreamServer;
 
-export default class MainView extends Component {
+export default class MainView extends React.Component {
 
-  //var getServer = require('./ServerComms.js').getServer;
+  constructor(props) {
+    super(props);
+    this.state = {
+      stream_server: Object.assign({ip: "", port: 0}),
+    };
+  }
+  componentDidMount() {
+    getStreamServer()
+      .then(stream_server => {
+        console.log(stream_server.ip + ":" + stream_server.port);
+        this.state.stream_server = stream_server;
+      });
 
-  //getInitialState() {
-  //  return {
-  //    server: "http://roocell.homeip.net:11111",
-  //  };
-  //}
+  }
+
 
   setParentState(args){
     this.props.setParentState(args)
@@ -77,8 +86,10 @@ export default class MainView extends Component {
 
   openPublish(navigator) {
     console.log("press publish");
-    RTCObjBridgeView.showPublish();
-
+    if (this.state.stream_server.port != 0)
+    {
+      RTCObjBridgeView.showPublish(this.state.stream_server.ip, this.state.stream_server.port);
+    }
   }
   _renderScene(route, navigator) {
     if (route.component) {

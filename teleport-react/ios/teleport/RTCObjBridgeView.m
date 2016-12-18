@@ -33,31 +33,15 @@ RCT_EXPORT_MODULE();
   [appdel.window.rootViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
-RCT_EXPORT_METHOD(showPublish) {
+// nonnull is a react requirement to maintain compatability with Android 
+RCT_EXPORT_METHOD(showPublish:(NSString*)ip port:(nonnull NSNumber*)port) {
   TGMark;
   dispatch_async(dispatch_get_main_queue(), ^{
     PublishExample *p = [[PublishExample alloc] init];
-    p.stream_server_ip=@"184.146.38.69";
-    p.stream_server_port=[NSNumber numberWithInt:8554];
+    p.stream_server_ip=ip;
+    p.stream_server_port=port;
     p.stream_identifier=@"mystream"; // TODO: set to UUID
     APPDEL;
-
-    
-    NSArray *vcs = appdel.window.rootViewController.childViewControllers;
-    
-    for (int i = 0 ; i <vcs.count; i++){
-      TGLog(@"%d %@", i, ((UIViewController*)[vcs objectAtIndex:i]).class);
-      //if ([[vcs objectAtIndex:i] isKindOfClass:UINavigationController]) {
-      //}
-    }
-    
-    //UIViewController *mainNav = appdel.window.rootViewController.childViewControllers[0];
-    
-    //UINavigationController *navVC = [[UINavigationController alloc] initWithRootViewController:p];
-    //UIBarButtonItem *_backButton = [[UIBarButtonItem alloc] initWithTitle:@"Back" style:UIBarButtonItemStyleDone target:self action:@selector(backButtonPressed:)];
-    
-    //navVC.navigationItem.backBarButtonItem = _backButton;
-
     [appdel.window.rootViewController presentViewController:p animated:YES completion:nil];
   });
 }
