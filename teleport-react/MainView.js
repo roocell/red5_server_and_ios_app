@@ -15,6 +15,9 @@ import {
 // react-native run-ios
 
 
+// http://stackoverflow.com/questions/37031192/react-native-reload-and-dev-tools-do-not-work
+
+
 import styles from './styles';
 
 import MapView from 'react-native-maps';
@@ -43,7 +46,7 @@ const mapstyles = StyleSheet.create({
 const buttonstyles = StyleSheet.create({
   container: {
     top: 25,
-    flex: 1,
+    //flex: 1,  // will cause height to fill entire screen
     flexDirection: 'row',
     justifyContent: 'space-between',
     backgroundColor: 'transparent',
@@ -59,6 +62,15 @@ const { RTCObjBridgeView } = NativeModules;
 
 
 export default class MainView extends Component {
+
+  //var getServer = require('./ServerComms.js').getServer;
+
+  //getInitialState() {
+  //  return {
+  //    server: "http://roocell.homeip.net:11111",
+  //  };
+  //}
+
   setParentState(args){
     this.props.setParentState(args)
   }
@@ -66,7 +78,7 @@ export default class MainView extends Component {
   openPublish(navigator) {
     console.log("press publish");
     RTCObjBridgeView.showPublish();
-    
+
   }
   _renderScene(route, navigator) {
     if (route.component) {
@@ -79,6 +91,7 @@ export default class MainView extends Component {
 
             <View style={mapstyles.container}
               >
+
               <MapView
                 style={ mapstyles.map }
                 initialRegion={{
@@ -88,11 +101,13 @@ export default class MainView extends Component {
                   longitudeDelta: 0.0421,
                 }}
               />
+
             </View>
 
+{/* put icons after the maps in order for them to appear above
+ absolute position */}
+
              <View style={buttonstyles.container}>
-                {/* put icons after the maps in order for them to appear above
-                 absolute position */}
                 <Icon name="bars" size={30} onPress={this.props.openDrawer} style={buttonstyles.menu}>
                 </Icon>
                 <Icon name="video-camera" color={'red'} size={30}
@@ -102,6 +117,8 @@ export default class MainView extends Component {
                   style={buttonstyles.video}>
                 </Icon>
             </View>
+
+
      </View>
 
     )
@@ -122,6 +139,8 @@ export default class MainView extends Component {
    );
   }
 }
+
+
 
 
 

@@ -11,6 +11,7 @@
 
 #import "RCTBundleURLProvider.h"
 #import "RCTRootView.h"
+#import "util.h"
 
 @implementation AppDelegate
 
@@ -18,7 +19,10 @@
 {
   NSURL *jsCodeLocation;
 
-  jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index.ios" fallbackResource:nil];
+  //jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index.ios" fallbackResource:nil];
+  
+  // for real device use
+  jsCodeLocation = [NSURL URLWithString:@"http://192.168.1.121:8081/index.ios.bundle"];
 
   RCTRootView *rootView = [[RCTRootView alloc] initWithBundleURL:jsCodeLocation
                                                       moduleName:@"teleport"
@@ -31,6 +35,12 @@
   rootViewController.view = rootView;
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
+  
+#ifdef DEBUG
+  TGLog(@"DEBUG MODE");
+#else
+  TGLog(@"*not* DEBUG MODE");
+#endif
   
   
   return YES;
