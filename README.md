@@ -1,4 +1,4 @@
-# teleport-ios
+# red5 server and ios app
 iOS APP Code with red5 streaming framework.
 In XCODE open teleport.xcworkspace (do *not* open the teleport.xcodeproj)
 Have to open using workspace because of cocoapods.
